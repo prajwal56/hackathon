@@ -1,2 +1,5 @@
 elasticsearch
 pyyaml
+numpy 
+openai 
+scikit-learn
