@@ -1,0 +1,7 @@
+es_host: "http://10.0.4.219:9200"
+es_username: "elastic"
+es_password: "hanTZ123$"
+rules_path: "/opt/hackathon/log_rca_engine/rules"
+interval: 60
+api_key: "sk-"
+model: "gpt-3.5-turbo"
