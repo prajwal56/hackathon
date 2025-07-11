@@ -1,0 +1,15 @@
+name: "Nginx SSL EOF Error"
+index: "linux-*"
+description: "Detects unexpected EOF SSL errors in Nginx logs"
+condition:
+  must:
+    - field: "message"
+      contains: "SSL_read() failed"
+    - field: "message"
+      contains: "unexpected eof"
+  must_not:
+    - field: "client"
+      match: "127.0.0.1"
+alert:
+  severity: "critical"
+  type: "ssl_error"
