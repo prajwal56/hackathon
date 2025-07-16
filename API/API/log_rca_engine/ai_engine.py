@@ -11,9 +11,9 @@ class AIEngine:
         dotenv_path = os.path.join("D:\hackathon\hackathon\API\settings", '.env')
         # print(dotenv_path)
         load_dotenv(dotenv_path)
-        self.api_key = os.getenv("OPENAI_API_KEY")
+        self.api_key = os.getenv("OPENAI_API_KEY","")
         self.client = OpenAI(api_key=self.api_key)
-        self.model = os.getenv("OPENAI_MODEL")
+        self.model = os.getenv("OPENAI_MODEL","")
 
     def generate_prompt(self, logs: str):
         try:

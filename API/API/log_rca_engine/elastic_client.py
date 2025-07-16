@@ -6,7 +6,7 @@ import os
 import re
 class ElasticClient:
     def __init__(self):
-        dotenv_path = os.path.join("D:\hackathon\hackathon\API\settings", '.env')
+        dotenv_path = os.path.join("/opt/Hackathon/hackathon/API/API/settings", '.env')
         # print(dotenv_path)
         load_dotenv(dotenv_path)
         print(os.getenv("ES_HOST"))
