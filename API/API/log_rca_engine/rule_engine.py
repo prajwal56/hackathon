@@ -6,6 +6,8 @@ from datetime import datetime, timedelta
 from ai_engine import AIEngine
 from dotenv import load_dotenv
 from pymongo import MongoClient
+import requests
+from datetime import datetime
 class RuleEngine:
     def __init__(self):
         dotenv_path = os.path.join("D:\hackathon\hackathon\API\settings", '.env')
@@ -46,37 +48,66 @@ class RuleEngine:
             self.evaluate_rule(rule, start_time, now)
 
     def evaluate_rule(self, rule, start_time, end_time):
-        # must_clauses = [{"match_phrase": {c["field"]: c["contains"]}} for c in rule["condition"].get("must", [])]
-        # must_not_clauses = [{"match": {c["field"]: c["match"]}} for c in rule["condition"].get("must_not", [])]
-
-        
-        rule['condition']["query"]['bool']['filter']={
-                    "range": {
-                        "@timestamp": {
-                            "gte": start_time.isoformat(),
-                            "lte": end_time.isoformat()
-                        }
-                    }
+        rule['condition']["query"]['bool']['filter'] = {
+            "range": {
+                "@timestamp": {
+                    "gte": start_time.isoformat(),
+                    "lte": end_time.isoformat()
                 }
-        rule['index'] = [i+"*" for i in rule.get("index","*")]
-        query = rule.get("condition",{}).get("query",{})
-        response = self.es.search(index=rule.get("index","*"), query=query, size=10)
+            }
+        }
+
+        rule['index'] = [i + "*" for i in rule.get("index", "*")]
+        query = rule.get("condition", {}).get("query", {})
+        
+        response = self.es.search(index=rule.get("index", "*"), query=query, size=10)
         hits = response.get("hits", {}).get("hits", [])
+
         if hits:
             unique_messages = set()
             for hit in hits:
                 msg = hit["_source"].get("message")
                 if msg:
-                    unique_messages.add(msg[0])
+                    if isinstance(msg, list):
+                        unique_messages.update(msg)
+                    else:
+                        unique_messages.add(msg)
 
             print(f"🚨 Rule triggered: {rule['name']} ({len(unique_messages)} unique hits)")
+
             if unique_messages:
                 ai_output = self.ai_engine.generate_prompt(str(unique_messages))
-                print("RCA:-------------------------",ai_output.get('rca',""))
-                print("solution:---------------------",ai_output.get('solution',""))
+                rca = ai_output.get('rca', "")
+                solution = ai_output.get('solution', "")
+
+                try:
+                    event_data = {
+                        "title": f"Rule triggered: {rule['name']}",
+                        "description": f"{len(unique_messages)} unique messages found.\n\nRCA: {rca}\n\nSolution: {solution}",
+                        "logs": list(unique_messages),
+                        "rule_name": rule.get('name',""),
+                        "severity": rule.get('alert',{}).get("severity",""),
+                    }
+
+                    api_response = requests.post(
+                        "http://localhost:8000/event/event/create_event/",
+                        json=event_data,
+                        headers={"Content-Type": "application/json"}
+                    )
+
+                    if api_response.status_code == 201:
+                        print("✅ Event created successfully.")
+                    else:
+                        print(f"❌ Failed to create event: {api_response.status_code} - {api_response.text}")
+
+                except Exception as e:
+                    print(f"❌ Error calling event API: {e}")
+
+                print("RCA:-------------------------", rca)
+                print("Solution:--------------------", solution)
+
         else:
             print("✅ No issues detected.")
-
 
 if __name__ == "__main__":
     engine = RuleEngine()
