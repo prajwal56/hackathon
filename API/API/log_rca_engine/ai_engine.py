@@ -5,13 +5,15 @@ import numpy as np
 from openai import OpenAI
 from typing import List
 from sklearn.metrics.pairwise import cosine_similarity
-
+from dotenv import load_dotenv
 class AIEngine:
-    def __init__(self, config):
-        self.config = config
-        self.api_key = config['api_key']
+    def __init__(self, ):
+        dotenv_path = os.path.join("D:\hackathon\hackathon\API\settings", '.env')
+        # print(dotenv_path)
+        load_dotenv(dotenv_path)
+        self.api_key = os.getenv("OPENAI_API_KEY")
         self.client = OpenAI(api_key=self.api_key)
-        self.model = config['model']
+        self.model = os.getenv("OPENAI_MODEL")
 
     def generate_prompt(self, logs: str):
         try:

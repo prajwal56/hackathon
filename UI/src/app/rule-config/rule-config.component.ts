@@ -28,7 +28,7 @@ export class RuleConfigComponent implements OnInit {
         ]
       }
     ],
-    business_service_details: 
+    business_service_details:
       {
         service_id: null,
         service_rules: [
@@ -48,8 +48,7 @@ export class RuleConfigComponent implements OnInit {
   isLoading = false;
   indexOptions = [];
   fieldOptions = [];
-  operatorOptions = [];
-  severityOptions = [];
+  operatorOptions = ['is', 'is not', 'is one of', 'is not one of', 'exists', 'does not exist', 'contains', 'starts with', 'ends with'];  severityOptions = ["CRITICAL", "MAJOR", "MINOR", "WARNING"];
   typeOptions = [];
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   service_list = []

@@ -21,7 +21,7 @@ from mongoengine import connect
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Path to the .env file inside the settings folder
-dotenv_path = os.path.join("..\settings", '.env')
+dotenv_path = os.path.join("D:\hackathon\hackathon\API\settings", '.env')
 print(dotenv_path)
 load_dotenv(dotenv_path)
 

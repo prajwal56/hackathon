@@ -30,7 +30,7 @@ class ElasticClient:
             fields = set()
             for index_data in mapping.values():
                 properties = index_data.get("mappings", {}).get("properties", {})
-                fields.update(ElasticClient._extract_leaf_fields(self,properties))
+                fields.update(ElasticClient.extract_leaf_fields(self,properties))
 
             return sorted(fields)
         except Exception as e:
@@ -49,27 +49,31 @@ class ElasticClient:
 
             # If the field has nested properties, go deeper
             if "properties" in value:
-                fields.extend(self._extract_leaf_fields(value["properties"], full_field))
+                fields.extend(self.extract_leaf_fields(value["properties"], full_field))
             else:
                 fields.append(full_field)
 
         return fields
 
 
-    def extract_fields(self, properties, parent_field=""):
+    def extract_leaf_fields(self, properties, parent_field=""):
         """
-        Recursively extract field names from nested mappings.
+        Recursively extract only the leaf (bottom-level) field names from nested mappings.
         """
         field_list = []
 
         for field, value in properties.items():
             full_field = f"{parent_field}.{field}" if parent_field else field
-            field_list.append(full_field)
 
+            # If field has nested properties, recurse
             if "properties" in value:
-                field_list.extend(self.extract_fields(value["properties"], full_field))
+                field_list.extend(self.extract_leaf_fields(value["properties"], full_field))
+            else:
+                # Only add if it doesn't have nested 'properties'
+                field_list.append(full_field)
 
         return field_list
+
 
     def get_all_index_options(self):
         """

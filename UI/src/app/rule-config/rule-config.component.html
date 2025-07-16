@@ -18,6 +18,7 @@
       bindValue="value"
       placeholder="Select Index"
       [(ngModel)]="ruleFormModel.index"
+      (ngModelChange)="getOptions()"
       name="index"
       required
     ></ng-select>

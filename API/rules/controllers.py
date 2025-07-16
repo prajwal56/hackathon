@@ -139,7 +139,6 @@ class RulesController:
                 "condition": rule.condition,
                 "alert": rule.alert
             }
-            RulesController.save_clean_yaml(self,rule)
             return {
                 "message": "Rule updated successfully",
                 "status": "success",
