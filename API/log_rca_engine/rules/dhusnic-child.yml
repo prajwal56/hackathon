@@ -1,0 +1,14 @@
+id: 687778fd161d22cadf3fad07
+name: Dhusnic child
+index: 10.0.5.97
+description: Dhusnic child
+condition:
+  query:
+    bool:
+      must:
+      - bool:
+          must:
+          - term:
+              host.ip.keyword: '100'
+alert:
+  severity: high

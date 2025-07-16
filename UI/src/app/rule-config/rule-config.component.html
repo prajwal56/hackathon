@@ -1,0 +1,299 @@
+<mat-card class="rule-card p-4">
+  <h2 class="mb-3">🛠️ Configure Rule</h2>
+
+  <form #ruleForm="ngForm" (ngSubmit)="submit()">
+    <!-- Rule Name -->
+    <mat-form-field class="full-width mb-2" appearance="outline">
+      <mat-label>Rule Name</mat-label>
+      <input matInput [(ngModel)]="ruleFormModel.name" name="name" required />
+    </mat-form-field>
+
+    <!-- Index -->
+    <mat-label>Index</mat-label>
+    <!-- <mat-form-field class="full-width mb-2" appearance="outline"> -->
+    <ng-select
+      class="full-width mb-2"
+      [items]="indexOptions"
+      bindLabel="key"
+      bindValue="value"
+      placeholder="Select Index"
+      [(ngModel)]="ruleFormModel.index"
+      name="index"
+      required
+    ></ng-select>
+    <!-- Description -->
+    <mat-form-field class="full-width mb-2" appearance="outline">
+      <mat-label>Description</mat-label>
+      <textarea
+        matInput
+        rows="3"
+        [(ngModel)]="ruleFormModel.description"
+        name="description"
+      ></textarea>
+    </mat-form-field>
+
+    <!-- Condition Groups -->
+    <label>Condition Groups</label>
+    <div
+      *ngFor="let group of ruleFormModel.condition; let i = index"
+      class="filter-group mb-4 p-4 border rounded col-12"
+    >
+      <!-- Group Logic -->
+      <div *ngIf="i > 0" fxLayout="row" fxLayoutGap="1rem" class="d-flex mb-3 col-12">
+        <ng-select
+          class="flex-1 col-8 m-1"
+          [items]="['AND', 'OR']"
+          [(ngModel)]="group.logic"
+          name="group_logic_{{ i }}"
+          placeholder="Select Logic"
+        ></ng-select>
+
+        <button
+          mat-stroked-button
+          color="warn"
+          (click)="removeConditionGroup(i)"
+          type="button"
+        >
+          <mat-icon>delete</mat-icon> Remove Group
+        </button>
+      </div>
+
+      <!-- Filters -->
+      <div *ngFor="let filter of group.filters; let j = index">
+        <div
+          class="d-flex align-items-center justify-content-start mb-3 col-12"
+        >
+          <!-- Field -->
+          <div class="col-4 m-1">
+            <mat-label>Field</mat-label>
+            <ng-select
+              class="flex-1"
+              [items]="fieldOptions"
+              [(ngModel)]="filter.field"
+              name="field_{{ i }}_{{ j }}"
+              placeholder="Select Field"
+            ></ng-select>
+          </div>
+
+          <!-- Operator -->
+          <div class="col-4 m-1">
+            <label>Operator</label>
+            <ng-select
+              class="flex-1"
+              [items]="operatorOptions"
+              [(ngModel)]="filter.operator"
+              name="operator_{{ i }}_{{ j }}"
+              placeholder="Select Operator"
+            ></ng-select>
+          </div>
+
+          <!-- Value input handling -->
+          <ng-container [ngSwitch]="filter.operator">
+            <!-- Single value text-based operators -->
+            <div *ngSwitchCase="'is'" class="flex-1 form-group">
+              <label>Value</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="filter.value"
+                [name]="'value_' + i + '_' + j"
+              />
+            </div>
+
+            <div *ngSwitchCase="'is not'" class="flex-1 form-group">
+              <label>Value</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="filter.value"
+                [name]="'value_' + i + '_' + j"
+              />
+            </div>
+
+            <div *ngSwitchCase="'contains'" class="flex-1 form-group">
+              <label>Contains</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="filter.value"
+                [name]="'value_' + i + '_' + j"
+                placeholder="Text to search for"
+              />
+            </div>
+
+            <div *ngSwitchCase="'starts with'" class="flex-1 form-group">
+              <label>Starts With</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="filter.value"
+                [name]="'value_' + i + '_' + j"
+                placeholder="Prefix text"
+              />
+            </div>
+
+            <div *ngSwitchCase="'ends with'" class="flex-1 form-group">
+              <label>Ends With</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="filter.value"
+                [name]="'value_' + i + '_' + j"
+                placeholder="Suffix text"
+              />
+            </div>
+
+            <!-- Multi-value dropdowns -->
+            <div *ngSwitchCase="'is one of'" class="flex-1 form-group">
+              <label>Values</label>
+              <ng-select
+                [items]="[]"
+                [addTag]="true"
+                [clearOnBackspace]="true"
+                [multiple]="true"
+                [(ngModel)]="filter.value"
+                [name]="'value_' + i + '_' + j"
+                placeholder="Select multiple values"
+              ></ng-select>
+            </div>
+
+            <div *ngSwitchCase="'is not one of'" class="flex-1 form-group">
+              <label>Values</label>
+              <ng-select
+                [items]="[]"
+                [addTag]="true"
+                [multiple]="true"
+                [(ngModel)]="filter.value"
+                [name]="'value_' + i + '_' + j"
+                placeholder="Select multiple values"
+              ></ng-select>
+            </div>
+          </ng-container>
+
+          <!-- Remove filter -->
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="removeFilter(i, j)"
+            *ngIf="group.filters.length > 1"
+            type="button"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+        <!-- Condition with next -->
+        <div *ngIf="j < group.filters.length - 1" fxFlex="100" class="mt-1">
+          <ng-select
+            class="logic-dropdown"
+            [items]="['AND', 'OR']"
+            [(ngModel)]="filter.logicWithNext"
+            name="logicWithNext_{{ i }}_{{ j }}"
+            placeholder="Condition with next"
+          ></ng-select>
+        </div>
+      </div>
+
+      <!-- Add filter -->
+      <button
+        mat-stroked-button
+        color="accent"
+        (click)="addFilter(i)"
+        class="mt-2"
+        type="button"
+      >
+        + Add Filter
+      </button>
+    </div>
+
+    <!-- Add Group -->
+    <div class="px-4">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="addConditionGroup()"
+        type="button"
+      >
+        + Add Filter Group
+      </button>
+    </div>
+
+    <div class="filter-group mb-4 p-4 border rounded mt-3">
+      <label>The Business Service Data</label>
+      <div class="col-10">
+        <label>Values</label>
+        <ng-select
+          [items]="service_list"
+          bindLabel="value"
+          bindValue="key"
+          [multiple]="false"
+          [(ngModel)]="ruleFormModel.business_service_details.service_id"
+          [name]="'BussinessServiceData'"
+          (ngModelChange)="getResourceOptions(ruleFormModel.business_service_details.service_id)"
+          placeholder="Select multiple values"
+        ></ng-select>
+        <div
+          *ngFor="
+            let rules of ruleFormModel.business_service_details.service_rules;
+            let i = index
+          "
+          class="d-flex justify-content-between align-items-center"
+        >
+          <div class="col-4 m-2">
+            <label>Services</label>
+            <ng-select
+              [items]="resource_list"
+              bindLabel="value"
+              bindValue="key"
+              [(ngModel)]="rules.process_details"
+              [name]="'process_details' + i"
+              placeholder="Select multiple values"
+            ></ng-select>
+          </div>
+          <div class="col-4 m-2">
+            <label>Rules</label>
+            <ng-select
+              [items]="rule_list"
+              bindLabel = "value"
+              bindValue = "key"
+              [(ngModel)]="rules.rule_id"
+              [name]="'rule_name' + i"
+              placeholder="Select multiple values"
+            ></ng-select>
+          </div>
+        </div>
+      </div>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="addServiceGroup()"
+        class="m-2"
+        type="button"
+      >
+        + Add Service
+      </button>
+    </div>
+
+    <!-- Alert Info -->
+    <div class="mt-4">
+      <h3 class="mb-2">Alert Info</h3>
+
+      <ng-select
+        class="full-width mb-2"
+        [items]="severityOptions"
+        [(ngModel)]="ruleFormModel.alert.severity"
+        name="severity"
+        placeholder="Select Severity"
+      ></ng-select>
+    </div>
+
+    <!-- Submit -->
+    <button mat-raised-button color="primary" type="submit">Submit</button>
+  </form>
+
+  <!-- DSL Output -->
+  <mat-divider class="my-4"></mat-divider>
+  <h4>Elasticsearch DSL Output</h4>
+  <pre class="bg-gray-100 p-3 border rounded"
+    >{{ generateESQuery() | json }}
+  </pre>
+</mat-card>

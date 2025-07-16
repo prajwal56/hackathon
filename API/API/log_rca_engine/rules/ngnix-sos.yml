@@ -1,0 +1,14 @@
+id: 6875ec6eda8b9248b1b9a5a4
+name: 'ngnix sos '
+index: windows-*
+description: ngnix failure
+condition:
+  must:
+  - field: host.name
+    contains: hello
+  must_not:
+  - field: event.code
+    contains: '5600'
+alert:
+  severity: critical
+  type: security

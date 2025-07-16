@@ -1,0 +1,18 @@
+<mat-toolbar class="navbar" color="primary">
+  <div class="navbar-left">
+    <mat-icon>view_in_ar</mat-icon>
+    <span class="navbar-title">Rule Engine</span>
+  </div>
+  <div class="navbar-right">
+    <button mat-stroked-button color="accent" class="nav-btn" routerLink="/rule-grid">
+      <mat-icon>tune</mat-icon>
+      Rule Config
+    </button>
+    <button mat-flat-button color="accent" class="nav-btn" routerLink="/event-viewer">
+      <mat-icon>visibility</mat-icon>
+      Event Viewer
+    </button>
+  </div>
+</mat-toolbar>
+
+<router-outlet></router-outlet>

@@ -1,0 +1,27 @@
+id: 68773c8e972ba6539068baa1
+name: ngnix sos 5
+index: 292-sravani-eims
+description: ngnix sos 5
+condition:
+  query:
+    bool:
+      must:
+      - bool:
+          must:
+          - match:
+              host.ip:
+                query: 10.0.5.97
+                case_insensitive: true
+          - match:
+              host.name:
+                query: dusnic
+                case_insensitive: true
+      - bool:
+          should:
+          - match:
+              host.ip:
+                query: 10.0.5.76
+                case_insensitive: true
+alert:
+  severity: medium
+  type: performance
