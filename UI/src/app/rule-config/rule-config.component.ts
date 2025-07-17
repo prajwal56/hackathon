@@ -29,15 +29,19 @@ export class RuleConfigComponent implements OnInit {
       }
     ],
     business_service_details:
-      {
-        service_id: null,
-        service_rules: [
-          {
-            rule_id: null,
-            process_details: null
-          }
-        ]
-      },
+    {
+      service_id: null,
+      service_rules: [
+        {
+          rule_id: null,
+          process_details: null
+        }
+      ]
+    },
+    duration: {
+      value: null,
+      unit: 'seconds'  // or 'minutes', 'hours', 'days'
+    },
     alert: {
       severity: null,
       type: ''
@@ -176,15 +180,22 @@ export class RuleConfigComponent implements OnInit {
   }
 
   submit() {
+    const durationInSeconds = this.convertToSeconds(
+      this.ruleFormModel.duration.value,
+      this.ruleFormModel.duration.unit
+    );
+
+
     const payload = {
       name: this.ruleFormModel.name,
       index: this.ruleFormModel.index,
       description: this.ruleFormModel.description,
+      duration: durationInSeconds,
       condition: this.generateESQuery(),
       alert: {
         severity: this.ruleFormModel.alert.severity,
       },
-      business_service_details : this.ruleFormModel.business_service_details
+      business_service_details: this.ruleFormModel.business_service_details
     };
 
     if (!this.ruleFormModel.name || !this.ruleFormModel.index || !this.ruleFormModel.alert.severity) {
@@ -220,6 +231,12 @@ export class RuleConfigComponent implements OnInit {
     this.ruleService.getRule(id).subscribe({
       next: (rule: any) => {
         this.patchForm(rule);
+        const durationInfo = this.convertFromSeconds(rule.duration || 0);
+        this.ruleFormModel.duration = {
+          value: durationInfo.value,
+          unit: durationInfo.unit
+        };
+
         this.isLoading = false;
       },
       error: () => {
@@ -344,4 +361,26 @@ export class RuleConfigComponent implements OnInit {
         return { match: { [fieldForText]: { query: rawValue, case_insensitive: true } } };
     }
   }
+
+  convertToSeconds(value: number, unit: string): number {
+    switch (unit) {
+      case 'minutes': return value * 60;
+      case 'hours': return value * 3600;
+      case 'days': return value * 86400;
+      default: return value;
+    }
+  }
+
+  convertFromSeconds(seconds: number): { value: number; unit: string } {
+    if (seconds % 86400 === 0) {
+      return { value: seconds / 86400, unit: 'days' };
+    } else if (seconds % 3600 === 0) {
+      return { value: seconds / 3600, unit: 'hours' };
+    } else if (seconds % 60 === 0) {
+      return { value: seconds / 60, unit: 'minutes' };
+    } else {
+      return { value: seconds, unit: 'seconds' };
+    }
+  }
+
 }

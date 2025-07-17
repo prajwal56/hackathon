@@ -81,6 +81,7 @@ class RulesController:
             condition = data.get("condition",{})
             alert = data.get("alert", {})
             business_service_details = data.get("business_service_details",{})
+            duration = data.get("duration",0)
             # Optional: Basic manual validation
             if not name or not index:
                 raise ValidationError("Missing required fields: 'name' or 'index'.")
@@ -94,7 +95,8 @@ class RulesController:
                 condition = condition,
                 business_service_details = business_service_details,
                 alert=alert,
-                is_deleted=False
+                is_deleted=False,
+                duration=duration
             )
             rule={
                 "id": rule.id,
@@ -130,6 +132,7 @@ class RulesController:
             rule.alert = data.get("alert",{})
             rule.is_deleted = False
             rule.business_service_details = data.get("business_service_details",{})
+            rule.duration = data.get("duration",0)
             rule.save()
             rule={
                 "id": rule.id,

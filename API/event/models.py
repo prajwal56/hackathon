@@ -1,4 +1,4 @@
-from mongoengine import Document, StringField, DateTimeField, BooleanField, ListField
+from mongoengine import Document, StringField, DateTimeField, BooleanField, ListField, DictField, ReferenceField
 import datetime
 
 class Event(Document):

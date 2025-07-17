@@ -40,7 +40,12 @@
       class="filter-group mb-4 p-4 border rounded col-12"
     >
       <!-- Group Logic -->
-      <div *ngIf="i > 0" fxLayout="row" fxLayoutGap="1rem" class="d-flex mb-3 col-12">
+      <div
+        *ngIf="i > 0"
+        fxLayout="row"
+        fxLayoutGap="1rem"
+        class="d-flex mb-3 col-12"
+      >
         <ng-select
           class="flex-1 col-8 m-1"
           [items]="['AND', 'OR']"
@@ -229,7 +234,11 @@
           [multiple]="false"
           [(ngModel)]="ruleFormModel.business_service_details.service_id"
           [name]="'BussinessServiceData'"
-          (ngModelChange)="getResourceOptions(ruleFormModel.business_service_details.service_id)"
+          (ngModelChange)="
+            getResourceOptions(
+              ruleFormModel.business_service_details.service_id
+            )
+          "
           placeholder="Select multiple values"
         ></ng-select>
         <div
@@ -254,8 +263,8 @@
             <label>Rules</label>
             <ng-select
               [items]="rule_list"
-              bindLabel = "value"
-              bindValue = "key"
+              bindLabel="value"
+              bindValue="key"
               [(ngModel)]="rules.rule_id"
               [name]="'rule_name' + i"
               placeholder="Select multiple values"
@@ -275,20 +284,50 @@
     </div>
 
     <!-- Alert Info -->
-    <div class="mt-4">
-      <h3 class="mb-2">Alert Info</h3>
+    <div class="row align-items-start mt-4">
+      <!-- Alert Info -->
+      <div class="col-md-6">
+        <h5 class="mb-2 fw-bold">🚨 Alert Severity</h5>
+        <ng-select
+          class="w-100"
+          [items]="severityOptions"
+          [(ngModel)]="ruleFormModel.alert.severity"
+          name="severity"
+          placeholder="Select Severity"
+        ></ng-select>
+      </div>
 
-      <ng-select
-        class="full-width mb-2"
-        [items]="severityOptions"
-        [(ngModel)]="ruleFormModel.alert.severity"
-        name="severity"
-        placeholder="Select Severity"
-      ></ng-select>
+      <!-- Duration -->
+      <div class="col-md-6">
+        <h5 class="mb-2 fw-bold">⏱️ Alert Window</h5>
+        <div class="d-flex gap-2">
+          <input
+            type="number"
+            min="1"
+            class="form-control"
+            style="max-width: 150px"
+            [(ngModel)]="ruleFormModel.duration.value"
+            name="durationValue"
+            placeholder="Enter time"
+            required
+          />
+          <ng-select
+            class="flex-grow-1"
+            [items]="['seconds', 'minutes', 'hours', 'days']"
+            [(ngModel)]="ruleFormModel.duration.unit"
+            name="durationUnit"
+            placeholder="Select unit"
+          ></ng-select>
+        </div>
+      </div>
     </div>
 
     <!-- Submit -->
-    <button mat-raised-button color="primary" type="submit">Submit</button>
+    <div class="d-flex justify-content-end mt-4">
+      <button mat-raised-button color="primary" type="submit" class="">
+        <mat-icon class="me-1">check_circle</mat-icon>Submit
+      </button>
+    </div>
   </form>
 
   <!-- DSL Output -->

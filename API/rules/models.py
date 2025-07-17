@@ -1,6 +1,6 @@
 # rules/models.py
 
-from mongoengine import Document, StringField, EmbeddedDocument, EmbeddedDocumentField, ListField,DictField,BooleanField
+from mongoengine import Document, StringField, EmbeddedDocument, EmbeddedDocumentField, ListField,DictField,BooleanField,IntField
 
 class Alert(EmbeddedDocument):
     severity = StringField(required=True)
@@ -15,3 +15,4 @@ class Rules(Document):
     alert = DictField()
     business_service_details = DictField()
     is_deleted = BooleanField(default=False)
+    duration = IntField()
