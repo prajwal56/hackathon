@@ -322,6 +322,49 @@
       </div>
     </div>
 
+    <!-- SSH Command Rules Section -->
+    <mat-card class="mt-3 bg-light border">
+      <div class="card mb-4 shadow-sm border-0">
+        <div class="card-body bg-light">
+          <h5 class="fw-semibold mb-3">🔐 SSH Commands</h5>
+
+          <div
+            *ngFor="
+              let cmd of ruleFormModel.ssh_commands;
+              let i = index;
+              trackBy: trackByIndex
+            "
+            class="d-flex align-items-center mb-2 gap-2"
+          >
+            <input
+              [(ngModel)]="ruleFormModel.ssh_commands[i]"
+              name="ssh_command_{{ i }}"
+              type="text"
+              class="form-control"
+              placeholder="Enter SSH command"
+              required
+            />
+            <button
+              type="button"
+              class="btn btn-outline-danger btn-sm"
+              (click)="removeSSHCommand(i)"
+              *ngIf="ruleFormModel.ssh_commands.length > 1"
+            >
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-outline-primary btn-sm"
+            (click)="addSSHCommand()"
+          >
+            <i class="bi bi-plus"></i> Add Command
+          </button>
+        </div>
+      </div>
+    </mat-card>
+
     <!-- Submit -->
     <div class="d-flex justify-content-end mt-4">
       <button mat-raised-button color="primary" type="submit" class="">

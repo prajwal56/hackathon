@@ -42,6 +42,7 @@ export class RuleConfigComponent implements OnInit {
       value: null,
       unit: 'seconds'  // or 'minutes', 'hours', 'days'
     },
+    ssh_commands: [''],
     alert: {
       severity: null,
       type: ''
@@ -59,6 +60,8 @@ export class RuleConfigComponent implements OnInit {
   service_list = []
   rule_list = []
   resource_list = []
+  ssh_commands: [''] = ['']
+
   constructor(
     private ruleService: RuleService,
     private route: ActivatedRoute,
@@ -195,9 +198,10 @@ export class RuleConfigComponent implements OnInit {
       alert: {
         severity: this.ruleFormModel.alert.severity,
       },
+      ssh_commands: this.ruleFormModel.ssh_commands.filter((cmd: string) => cmd.trim() !== ''),
       business_service_details: this.ruleFormModel.business_service_details
     };
-
+    debugger;
     if (!this.ruleFormModel.name || !this.ruleFormModel.index || !this.ruleFormModel.alert.severity) {
       this.snackBar.open('Please fill all required fields.', 'Close', { duration: 3000 });
       return;
@@ -254,6 +258,14 @@ export class RuleConfigComponent implements OnInit {
       severity: rule.alert?.severity || '',
       type: rule.alert?.type || ''
     };
+
+    // Patch SSH commands (load existing or fallback to one empty input)
+    this.ruleFormModel.ssh_commands = (rule.ssh_commands && rule.ssh_commands.length)
+  ? rule.ssh_commands
+  : [''];
+
+
+    // Patch conditions
     this.ruleFormModel.condition = (rule.condition || []).map((group: any) => {
       return {
         logic: group.logic || 'AND',
@@ -266,6 +278,7 @@ export class RuleConfigComponent implements OnInit {
       };
     });
   }
+
 
   generateESQuery(): any {
     const groupQueries = this.ruleFormModel.condition.map((group: any) => {
@@ -382,5 +395,19 @@ export class RuleConfigComponent implements OnInit {
       return { value: seconds, unit: 'seconds' };
     }
   }
+
+  addSSHCommand() {
+    this.ruleFormModel.ssh_commands.push('');
+  }
+
+  removeSSHCommand(index: number) {
+    if (this.ruleFormModel.ssh_commands.length > 1) {
+      this.ruleFormModel.ssh_commands.splice(index, 1);
+    }
+  }
+
+  trackByIndex(index: number, obj: any): any {
+  return index;
+}
 
 }

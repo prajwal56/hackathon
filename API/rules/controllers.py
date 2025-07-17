@@ -82,6 +82,7 @@ class RulesController:
             alert = data.get("alert", {})
             business_service_details = data.get("business_service_details",{})
             duration = data.get("duration",0)
+            ssh_commands = data.get("ssh_commands",[])
             # Optional: Basic manual validation
             if not name or not index:
                 raise ValidationError("Missing required fields: 'name' or 'index'.")
@@ -96,7 +97,8 @@ class RulesController:
                 business_service_details = business_service_details,
                 alert=alert,
                 is_deleted=False,
-                duration=duration
+                duration=duration,
+                ssh_commands=ssh_commands
             )
             rule={
                 "id": rule.id,
@@ -133,6 +135,7 @@ class RulesController:
             rule.is_deleted = False
             rule.business_service_details = data.get("business_service_details",{})
             rule.duration = data.get("duration",0)
+            rule.ssh_commands = data.get("ssh_commands",[])
             rule.save()
             rule={
                 "id": rule.id,

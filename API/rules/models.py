@@ -16,3 +16,4 @@ class Rules(Document):
     business_service_details = DictField()
     is_deleted = BooleanField(default=False)
     duration = IntField()
+    ssh_commands = ListField(StringField())

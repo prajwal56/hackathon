@@ -1,6 +1,8 @@
 from .serializers import EventSerializer
 from .models import Event
 from API.log_rca_engine.ai_engine import AIEngine
+from datetime import datetime
+from zoneinfo import ZoneInfo 
 class EventController:
     """
     Handles business logic for Event operations.
@@ -19,10 +21,26 @@ class EventController:
     @staticmethod
     def get_event_list(request):
         """
-        Retrieves a list of all Event documents.
+        Retrieves a list of all Event documents with created_at converted to IST and formatted.
         """
         events = Event.objects.all()
-        return EventSerializer(events, many=True).data
+        data = EventSerializer(events, many=True).data
+
+        for i in data:
+            time = i.get("created_at")
+            if time:
+                # Parse string in UTC
+                dt = datetime.strptime(time, '%Y-%m-%dT%H:%M:%S.%fZ')
+                dt = dt.replace(tzinfo=ZoneInfo('UTC'))
+
+                # Convert to IST
+                ist_time = dt.astimezone(ZoneInfo('Asia/Kolkata'))
+
+                # Format
+                formatted = ist_time.strftime('%d-%m-%Y %I:%M:%S %p')
+                i['created_at'] = formatted
+
+        return data
 
     @staticmethod
     def get_event_rca(request):
