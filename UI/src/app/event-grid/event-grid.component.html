@@ -1,0 +1,128 @@
+<mat-card class="rule-card mat-elevation-z4">
+  <div class="rule-card-header flex items-center justify-between px-4 pt-3">
+    <h2 class="text-xl font-semibold">📋 Event Viewer</h2>
+  </div>
+
+  <div class="table-container px-4 pb-4 overflow-auto">
+    <table
+      mat-table
+      [dataSource]="dataSource"
+      class="mat-elevation-z1 w-full resizable-table"
+      matSort
+    >
+      <!-- Rule Name -->
+      <ng-container matColumnDef="name">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          class="resizable"
+          style="width: 20%"
+        >
+          Rule Name
+          <span
+            class="resize-handle"
+            (mousedown)="startResize($event, 0)"
+          ></span>
+        </th>
+        <td mat-cell *matCellDef="let row">{{ row.title }}</td>
+      </ng-container>
+
+      <!-- Description -->
+      <ng-container matColumnDef="description">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          class="resizable"
+          style="width: 25%"
+        >
+          Description
+          <span
+            class="resize-handle"
+            (mousedown)="startResize($event, 1)"
+          ></span>
+        </th>
+        <td mat-cell *matCellDef="let row">{{ row.description }}</td>
+      </ng-container>
+
+      <!-- Severity -->
+      <ng-container matColumnDef="severity">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          class="resizable"
+          style="width: 15%"
+        >
+          Severity
+          <span
+            class="resize-handle"
+            (mousedown)="startResize($event, 2)"
+          ></span>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <span
+            class="severity-badge"
+            [ngClass]="getSeverityClass(row.severity)"
+          >
+            {{ row.severity }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Log Count -->
+      <ng-container matColumnDef="log_count">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          class="resizable"
+          style="width: 15%"
+        >
+          Log Count
+          <span
+            class="resize-handle"
+            (mousedown)="startResize($event, 3)"
+          ></span>
+        </th>
+        <td mat-cell *matCellDef="let row">{{ row.logs.length }}</td>
+      </ng-container>
+
+      <!-- Actions -->
+      <ng-container matColumnDef="actions">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          class="text-center resizable"
+          style="width: 10%"
+        >
+          Actions
+          <span
+            class="resize-handle"
+            (mousedown)="startResize($event, 4)"
+          ></span>
+        </th>
+        <td mat-cell *matCellDef="let row" class="text-center">
+          <button mat-icon-button color="primary" (click)="openEvent(row)">
+            <mat-icon>visibility</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: columns"
+        class="table-row-hover"
+      ></tr>
+    </table>
+
+    <mat-paginator
+      [pageSize]="10"
+      [pageSizeOptions]="[5, 10, 20, 50, 100]"
+      showFirstLastButtons
+    >
+    </mat-paginator>
+  </div>
+</mat-card>

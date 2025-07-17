@@ -1,0 +1,101 @@
+.rule-card {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.rule-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.mat-table {
+  width: 100%;
+  min-width: 600px;
+}
+
+.table-row-hover:hover {
+  background-color: #f5f5f5;
+  transition: background 0.3s ease;
+}
+
+.status-chip {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.status-chip.active {
+  background-color: #c8e6c9;
+  color: #256029;
+}
+
+.status-chip.inactive {
+  background-color: #ffcdd2;
+  color: #b71c1c;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.resizable {
+  position: relative;
+  user-select: none;
+}
+
+.resize-handle {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 10;
+}
+
+.severity-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  color: white;
+  font-weight: 500;
+  font-size: 0.85rem;
+  display: inline-block;
+  text-transform: capitalize;
+}
+
+.severity-critical {
+  background-color: #d32f2f; // red
+}
+
+.severity-major {
+  background-color: #f57c00; // orange
+}
+
+.severity-minor {
+  background-color: #fbc02d; // yellow
+  color: #212121;
+}
+
+.severity-warning {
+  background-color: #1976d2; // blue
+}
+
+.resizable-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.mat-header-cell,
+.mat-cell {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+

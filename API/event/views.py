@@ -19,3 +19,25 @@ class EventViewSet(viewsets.ViewSet):
             return Response(data, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+    @action(detail=False, methods=['get'], url_path='event_list')
+    def get_event_list(self, request):
+        """
+        Get a list of events.
+        """
+        try:
+            data = EventController.get_event_list(request)
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'], url_path='get_event_rca')
+    def get_event_rca(self, request):
+        """
+        Get RCA for an event.
+        """
+        try:
+            data = EventController.get_event_rca(request)
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

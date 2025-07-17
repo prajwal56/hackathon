@@ -91,7 +91,7 @@ class RuleEngine:
                     }
 
                     api_response = requests.post(
-                        "http://localhost:8000/event/event/create_event/",
+                        "http://localhost:9090/api/event/create_event/",
                         json=event_data,
                         headers={"Content-Type": "application/json"}
                     )

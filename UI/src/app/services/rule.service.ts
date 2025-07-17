@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class RuleService {
-  private baseUrl = 'http://localhost:9090/api/rules'; // Match your Django viewset route
+  private baseUrl = 'http://localhost:9090/rules'; // Match your Django viewset route
 
   constructor(private http: HttpClient) { }
 
@@ -56,5 +56,9 @@ export class RuleService {
 
   getResource_list(data:any={}): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/resource_list/`,data);
+  }
+
+  getEvent_list(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}//event_list/`);
   }
 }

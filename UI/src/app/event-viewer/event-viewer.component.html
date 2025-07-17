@@ -1,1 +1,230 @@
-<p>event-viewer works!</p>
+<div class="d-flex flex-column h-100">
+  <!-- Header -->
+  <div
+    class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom bg-white shadow-sm sticky-top"
+    style="min-height: 42px"
+  >
+    <h6 class="fw-semibold mb-0" style="font-size: 0.95rem">🔍 Event Viewer</h6>
+    <button mat-icon-button (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="p-4 overflow-auto flex-grow-1">
+    <!-- Event Metadata -->
+    <div class="mb-3">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <strong>Rule Name:</strong> {{ data.rule_name }}
+        </div>
+        <div class="col-sm-6">
+          <strong>Created At:</strong> {{ data.created_at | date : "medium" }}
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <strong>Severity:</strong>
+          <span class="badge bg-danger" *ngIf="data.severity === 'CRITICAL'">{{
+            data.severity
+          }}</span>
+          <span
+            class="badge bg-warning text-dark"
+            *ngIf="data.severity === 'WARNING'"
+            >{{ data.severity }}</span
+          >
+          <span class="badge bg-success" *ngIf="data.severity === 'INFO'">{{
+            data.severity
+          }}</span>
+        </div>
+      </div>
+      <div class="mb-3">
+        <strong>Description:</strong>
+        <div class="border rounded p-2 bg-light" style="white-space: pre-wrap">
+          {{ data.description }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Logs Grid -->
+    <div class="border rounded mb-4 d-flex flex-column" style="height: 400px">
+      <div
+        class="d-flex justify-content-between align-items-center bg-light border-bottom px-1 py-2"
+      >
+        <div>
+          <input
+            type="checkbox"
+            [checked]="isAllSelected()"
+            (change)="toggleSelectAll($event)"
+          />
+          <span>select All Logs</span>
+        </div>
+        <div><strong>Logs</strong></div>
+      </div>
+      <div class="flex-grow-1 overflow-auto">
+        <table class="table table-sm table-hover m-0">
+          <tbody>
+            <tr *ngFor="let log of data.logs; let i = index">
+              <td style="width: 30px">
+                <input
+                  type="checkbox"
+                  [(ngModel)]="selectedLogsMap[i]"
+                  (change)="updateSelectedLogs()"
+                />
+              </td>
+              <td style="white-space: pre-wrap">{{ log }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- RCA Result -->
+    <div *ngIf="showAnalysis" class="mt-4 position-relative">
+      <div *ngIf="loading" class="loader-overlay text-center my-4">
+        <div class="spinner-border text-primary" role="status"></div>
+      </div>
+      <div *ngIf="!loading" class="card shadow-sm border-0">
+        <div class="card-body">
+          <h5 class="card-title text-primary">🔍 Root Cause Analysis (RCA)</h5>
+          <p class="card-text text-dark" style="white-space: pre-line">
+            {{ parsedAnalysis.rca }}
+          </p>
+
+          <h5 class="card-title text-success mt-4">🛠 Solution</h5>
+          <p class="card-text text-dark" style="white-space: pre-line">
+            {{ parsedAnalysis.solution }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Host Credentials Section -->
+    <div class="mt-4 border p-3 rounded bg-light">
+      <h5 class="mb-3">🔐 Remote Host Credentials</h5>
+
+      <div class="d-flex flex-wrap gap-3">
+        <div class="flex-grow-1">
+          <label class="form-label fw-semibold">IP Address</label>
+          <input
+            type="text"
+            [(ngModel)]="hostForm.ipAddress"
+            class="form-control"
+            placeholder="e.g. 192.168.1.10"
+            [ngClass]="{
+              'is-invalid': !isValidIP(hostForm.ipAddress) && touched
+            }"
+            (blur)="touched = true"
+          />
+          <div
+            *ngIf="!isValidIP(hostForm.ipAddress) && touched"
+            class="invalid-feedback"
+          >
+            Please enter a valid IP address.
+          </div>
+        </div>
+
+        <div class="flex-grow-1">
+          <label class="form-label fw-semibold">Username</label>
+          <input
+            type="text"
+            [(ngModel)]="hostForm.username"
+            class="form-control"
+            placeholder="e.g. admin"
+            [ngClass]="{ 'is-invalid': !hostForm.username && touched }"
+            (blur)="touched = true"
+          />
+          <div *ngIf="!hostForm.username && touched" class="invalid-feedback">
+            Username is required.
+          </div>
+        </div>
+
+        <div class="form-group position-relative d-flex align-items-center">
+          <label for="password" class="me-2 fw-bold">Password</label>
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            class="form-control"
+            id="password"
+            [(ngModel)]="password"
+            name="password"
+            required
+          />
+          <i
+            class="bi"
+            [ngClass]="showPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'"
+            (click)="togglePasswordVisibility()"
+            style="position: absolute; right: 10px; cursor: pointer"
+          ></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dynamic Input List -->
+    <!-- Command Inputs -->
+    <div class="mt-4">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="form-check form-switch">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="selectAllCmd"
+            [checked]="areAllCommandsSelected()"
+            (change)="toggleSelectAllCommands($event)"
+          />
+          <label class="form-check-label" for="selectAllCmd">Select All</label>
+        </div>
+        <h5 class="mb-0">📥 Custom Commands</h5>
+      </div>
+
+      <div
+        *ngFor="let cmd of customInputs; let i = index"
+        class="input-group mb-2"
+      >
+        <div class="input-group-text">
+          <input
+            type="checkbox"
+            [(ngModel)]="cmd.selected"
+            (change)="updateSelectedCommands()"
+          />
+        </div>
+        <input
+          [(ngModel)]="cmd.text"
+          type="text"
+          class="form-control"
+          placeholder="Enter command..."
+        />
+        <button class="btn btn-outline-danger" (click)="removeInput(i)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+
+      <button class="btn btn-sm btn-outline-secondary" (click)="addInput()">
+        ➕ Add Command
+      </button>
+    </div>
+
+    <!-- Terminal Output -->
+    <div *ngIf="executing" class="text-center my-4">
+      <div class="spinner-border text-info" role="status"></div>
+    </div>
+
+    <div *ngIf="executionOutput && !executing" class="mt-4">
+      <h6 class="mb-2 text-muted">📤 Output:</h6>
+      <pre
+        class="bg-dark text-light p-3 rounded"
+        style="max-height: 300px; overflow-y: auto"
+        >{{ executionOutput }}
+      </pre>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div
+    class="d-flex justify-content-end gap-2 align-items-center border-top px-4 py-3 bg-white shadow-sm sticky-bottom"
+  >
+    <button class="btn btn-outline-primary" (click)="analyzeSelected()">
+      Analyze
+    </button>
+    <button class="btn btn-success" (click)="executeCommands()">Execute</button>
+  </div>
+</div>

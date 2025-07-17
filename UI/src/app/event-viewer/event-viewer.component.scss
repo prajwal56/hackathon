@@ -1,0 +1,61 @@
+.rule-card {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.rule-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.mat-table {
+  width: 100%;
+  min-width: 600px;
+}
+
+.table-row-hover:hover {
+  background-color: #f5f5f5;
+  transition: background 0.3s ease;
+}
+
+.status-chip {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.status-chip.active {
+  background-color: #c8e6c9;
+  color: #256029;
+}
+
+.status-chip.inactive {
+  background-color: #ffcdd2;
+  color: #b71c1c;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.loader-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  background-color: rgba(255, 255, 255, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  border-radius: 0.375rem;
+}

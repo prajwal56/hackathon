@@ -48,7 +48,8 @@ export class RuleConfigComponent implements OnInit {
   isLoading = false;
   indexOptions = [];
   fieldOptions = [];
-  operatorOptions = ['is', 'is not', 'is one of', 'is not one of', 'exists', 'does not exist', 'contains', 'starts with', 'ends with'];  severityOptions = ["CRITICAL", "MAJOR", "MINOR", "WARNING"];
+  operatorOptions = ['is', 'is not', 'is one of', 'is not one of', 'exists', 'does not exist', 'contains', 'starts with', 'ends with'];
+  severityOptions = ["CRITICAL", "MAJOR", "MINOR", "WARNING"];
   typeOptions = [];
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   service_list = []

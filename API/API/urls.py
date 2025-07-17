@@ -36,7 +36,7 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     # your rules app
-    path('api/', include('rules.urls')),
+    path('rules/', include('rules.urls')),
     path('event/', include('event.urls')),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
