@@ -21,7 +21,7 @@ from mongoengine import connect
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Path to the .env file inside the settings folder
-dotenv_path = os.path.join("D:\hackathon\hackathon\API\settings", '.env')
+dotenv_path = os.path.join("/opt/Hackathon/hackathon/API/API/settings", '.env')
 print(dotenv_path)
 load_dotenv(dotenv_path)
 
@@ -34,7 +34,7 @@ SECRET_KEY = 'django-insecure-f5jy9#dvg46tt(6h-+afirr=g)mfh0anutg-v70+&5#5*cffyn
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["http://10.0.4.203:4200","http://10.0.4.203","http://10.0.4.203:9090","10.0.4.203"]
 
 
 # Application definition
@@ -108,8 +108,8 @@ WSGI_APPLICATION = 'API.wsgi.application'
 # }
 
 connect(
-    db=os.getenv("MONGO_DB", "mydatabase"),
-    host=os.getenv("MONGO_HOST", "mongodb://10.0.5.97:27017/"),
+    db=os.getenv("MONGO_DB", "log_rca_engine"),
+    host=os.getenv("MONGO_URL", "mongodb://10.0.5.97:27017/"),
 )
 
 

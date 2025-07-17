@@ -111,11 +111,11 @@ class RuleEngine:
             "severity": rule.get('alert', {}).get("severity", ""),
         }
 
-        api_response = requests.post(
-            "http://localhost:9090/event/create_event/",
-            json=event_data,
-            headers={"Content-Type": "application/json"}
-        )
+                    api_response = requests.post(
+                        "http://10.0.4.203:9090/api/event/create_event/",
+                        json=event_data,
+                        headers={"Content-Type": "application/json"}
+                    )
 
         if api_response.status_code == 201:
             print("✅ Event created successfully.")

@@ -21,7 +21,7 @@ class AIEngine:
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=[
-                    {"role": "system", "content": "You get the RCA for the error logs. get the solution for it in json format. output format {'rca':'rca of the error','solution':'solution of the error'} in json"},
+                    {"role": "system", "content": "You get the RCA for the error logs. get the full described solution with proper explanation along with diagrams if needed for it in json format. get the sh commands for solving the issue and it doesnt contain any description only commands with nextline. output format {'rca':'rca of the error','solution':'solution of the error','commands':'command'} in json"},
                     {"role": "user", "content": prompt}
                 ],
                 temperature=0.2,

@@ -1,238 +1,287 @@
-<div class="d-flex flex-column h-100">
-  <!-- Header -->
-  <div
-    class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom bg-white shadow-sm sticky-top"
-    style="min-height: 42px"
-  >
-    <h6 class="fw-semibold mb-0" style="font-size: 0.95rem">🔍 Event Viewer</h6>
-    <button mat-icon-button (click)="close()">
+<!-- Updated eventviewer-component.html -->
+<div class="event-viewer-container d-flex flex-column h-100">
+  <!-- Professional Header -->
+  <div class="event-header d-flex justify-content-between align-items-center px-3 py-2 border-bottom bg-white shadow-sm sticky-top">
+    <div class="header-title d-flex align-items-center">
+      <div class="header-icon-wrapper me-3">
+        <i class="bi bi-eye-fill"></i>
+      </div>
+      <div>
+        <h6 class="fw-semibold mb-0">🔍 Event Viewer</h6>
+        <small class="text-muted">Real-time Log Analysis</small>
+      </div>
+    </div>
+    <button mat-icon-button (click)="close()" class="close-button">
       <mat-icon>close</mat-icon>
     </button>
   </div>
 
   <!-- Main Content -->
-  <div class="p-4 overflow-auto flex-grow-1">
+  <div class="main-content p-4 overflow-auto flex-grow-1">
+    
     <!-- Event Metadata -->
-    <div class="mb-3">
-      <div class="row mb-2">
-        <div class="col-sm-6">
-          <strong>Rule Name:</strong> {{ data.rule_name }}
+    <div class="metadata-section mb-3">
+      <div class="professional-card">
+        <div class="card-header">
+          <i class="bi bi-info-circle me-2"></i>
+          <span class="fw-bold">Event Information</span>
         </div>
-        <div class="col-sm-6">
-          <strong>Created At:</strong> {{ data.created_at | date : "medium" }}
-        </div>
-      </div>
-      <div class="row mb-2">
-        <div class="col-sm-6">
-          <strong>Severity:</strong>
-          <span class="badge severity-critical text-dark" *ngIf="data.severity === 'CRITICAL'">{{
-            data.severity
-          }}</span>
-          <span
-            class="badge severity-warning text-dark"
-            *ngIf="data.severity === 'WARNING'"
-            >{{ data.severity }}</span
-          >
-          <span class="badge severity-major text-dark" *ngIf="data.severity === 'MAJOR'">{{
-            data.severity
-          }}</span>
-
-          <span class="badge severity-minor text-dark" *ngIf="data.severity === 'MINOR'">{{
-            data.severity
-          }}</span>
-        </div>
-      </div>
-      <div class="mb-3">
-        <strong>Description:</strong>
-        <div class="border rounded p-2 bg-light" style="white-space: pre-wrap">
-          {{ data.description }}
-        </div>
-      </div>
-    </div>
-
-    <!-- Logs Grid -->
-    <div class="border rounded mb-4 d-flex flex-column" style="height: 400px">
-      <div
-        class="d-flex justify-content-between align-items-center bg-light border-bottom px-1 py-2"
-      >
-        <div>
-          <input
-            type="checkbox"
-            [checked]="isAllSelected()"
-            (change)="toggleSelectAll($event)"
-          />
-          <span>select All Logs</span>
-        </div>
-        <div><strong>Logs</strong></div>
-      </div>
-      <div class="flex-grow-1 overflow-auto">
-        <table class="table table-sm table-hover m-0">
-          <tbody>
-            <tr *ngFor="let log of data.logs; let i = index">
-              <td style="width: 30px">
-                <input
-                  type="checkbox"
-                  [(ngModel)]="selectedLogsMap[i]"
-                  (change)="updateSelectedLogs()"
-                />
-              </td>
-              <td style="white-space: pre-wrap">{{ log }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- RCA Result -->
-    <div *ngIf="showAnalysis" class="mt-4 position-relative">
-      <div *ngIf="loading" class="loader-overlay text-center my-4">
-        <div class="spinner-border text-primary" role="status"></div>
-      </div>
-      <div *ngIf="!loading" class="card shadow-sm border-0">
         <div class="card-body">
-          <h5 class="card-title text-primary">🔍 Root Cause Analysis (RCA)</h5>
-          <p class="card-text text-dark" style="white-space: pre-line">
-            {{ parsedAnalysis.rca }}
-          </p>
-
-          <h5 class="card-title text-success mt-4">🛠 Solution</h5>
-          <p class="card-text text-dark" style="white-space: pre-line">
-            {{ parsedAnalysis.solution }}
-          </p>
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <div class="info-item">
+                <label class="info-label">Rule Name</label>
+                <div class="info-value">{{ data.rule_name }}</div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="info-item">
+                <label class="info-label">Created At</label>
+                <div class="info-value">{{ data.created_at | date : "medium" }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <div class="info-item">
+                <label class="info-label">Severity</label>
+                <div class="info-value">
+                  <span class="severity-badge severity-critical text-dark" *ngIf="data.severity === 'CRITICAL'">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                    {{ data.severity }}
+                  </span>
+                  <span class="severity-badge severity-warning text-dark" *ngIf="data.severity === 'WARNING'">
+                    <i class="bi bi-exclamation-triangle me-1"></i>
+                    {{ data.severity }}
+                  </span>
+                  <span class="severity-badge severity-major text-dark" *ngIf="data.severity === 'MAJOR'">
+                    <i class="bi bi-exclamation-circle me-1"></i>
+                    {{ data.severity }}
+                  </span>
+                  <span class="severity-badge severity-minor text-dark" *ngIf="data.severity === 'MINOR'">
+                    <i class="bi bi-info-circle me-1"></i>
+                    {{ data.severity }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Host Credentials Section -->
-    <div class="mt-4 border p-3 rounded bg-light">
-      <h5 class="mb-3">🔐 Remote Host Credentials</h5>
-
-      <div class="d-flex flex-wrap gap-3">
-        <div class="flex-grow-1">
-          <label class="form-label fw-semibold">IP Address</label>
-          <input
-            type="text"
-            [(ngModel)]="hostForm.ipAddress"
-            class="form-control"
-            placeholder="e.g. 192.168.1.10"
-            [ngClass]="{
-              'is-invalid': !isValidIP(hostForm.ipAddress) && touched
-            }"
-            (blur)="touched = true"
-          />
-          <div
-            *ngIf="!isValidIP(hostForm.ipAddress) && touched"
-            class="invalid-feedback"
-          >
-            Please enter a valid IP address.
+    <!-- Logs & Analysis per IP -->
+    <div *ngFor="let item of data.logs; let j = index" class="host-section mb-4">
+      
+      <!-- Host Header -->
+      <div class="host-header-card professional-card mb-3">
+        <div class="host-header-content d-flex justify-content-between align-items-center p-3">
+          <div class="host-info d-flex align-items-center">
+            <div class="host-icon-wrapper me-3">
+              <i class="bi bi-hdd-network"></i>
+            </div>
+            <div>
+              <h5 class="mb-0 fw-bold">{{ item.ip_address || 'Host ' + (j + 1) }}</h5>
+              <small class="text-muted">Remote Server</small>
+            </div>
+          </div>
+          <div class="host-stats">
+            <span class="badge bg-primary rounded-pill">{{ item.msg[0]?.length || 0 }} logs</span>
           </div>
         </div>
+      </div>
 
-        <div class="flex-grow-1">
-          <label class="form-label fw-semibold">Username</label>
-          <input
-            type="text"
-            [(ngModel)]="hostForm.username"
-            class="form-control"
-            placeholder="e.g. admin"
-            [ngClass]="{ 'is-invalid': !hostForm.username && touched }"
-            (blur)="touched = true"
-          />
-          <div *ngIf="!hostForm.username && touched" class="invalid-feedback">
-            Username is required.
-          </div>
-        </div>
-
-        <div class="form-group position-relative d-flex align-items-center">
-          <div class="flex-grow-1 position-relative">
-            <label for="password" class="form-label fw-semibold"
-              >Password</label
-            >
+      <!-- Logs Section -->
+      <div class="logs-section border rounded mb-4 d-flex flex-column" style="height: 400px">
+        <div class="logs-header d-flex justify-content-between align-items-center bg-light border-bottom px-3 py-2">
+          <div class="d-flex align-items-center">
             <input
-              [type]="showPassword ? 'text' : 'password'"
-              class="form-control pe-5"
-              id="password"
-              [(ngModel)]="password"
-              name="password"
-              required
+              type="checkbox"
+              [checked]="isAllSelected(j)"
+              (change)="toggleSelectAll($event, j)"
+              class="form-check-input me-2"
             />
-            <i
-              class="bi position-absolute"
-              [ngClass]="showPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'"
-              (click)="togglePasswordVisibility()"
-              style="right: 10px; top: 38px; cursor: pointer"
-            ></i>
+            <span>Select All Logs</span>
+          </div>
+          <div>
+            <strong>Logs for {{ item.ip_address }}</strong>
+          </div>
+        </div>
+        <div class="flex-grow-1 overflow-auto">
+          <table class="table table-sm table-hover m-0">
+            <tbody>
+              <tr *ngFor="let log of item.msg[0]; let i = index" class="log-row">
+                <td style="width: 30px">
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="selectedLogsMap[j + '-' + i]"
+                    (change)="updateSelectedLogs(j)"
+                    class="form-check-input"
+                  />
+                </td>
+                <td style="white-space: pre-wrap">{{ log }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="p-2 border-top bg-light">
+          <button class="btn btn-outline-primary" (click)="analyzeSelected(j, item.ip_address)">
+            <i class="bi bi-search me-2"></i>
+            Analyze
+          </button>
+        </div>
+      </div>
+
+      <!-- RCA Result -->
+      <div *ngIf="showAnalysis" class="analysis-section mt-4 position-relative">
+        <div *ngIf="loading" class="loader-overlay text-center my-4">
+          <div class="spinner-border text-primary" role="status"></div>
+          <p class="mt-2 text-muted">Analyzing logs...</p>
+        </div>
+        <div *ngIf="!loading" class="professional-card">
+          <div class="card-body">
+            <div class="analysis-item mb-4">
+              <h5 class="card-title text-primary d-flex align-items-center">
+                <i class="bi bi-search me-2"></i>
+                🔍 Root Cause Analysis (RCA)
+              </h5>
+              <div class="analysis-content p-3 bg-light rounded">
+                <p class="card-text text-dark" style="white-space: pre-line">
+                  {{ parsedAnalysis.rca }}
+                </p>
+              </div>
+            </div>
+
+            <div class="analysis-item mb-4">
+              <h5 class="card-title text-success d-flex align-items-center mt-4">
+                <i class="bi bi-tools me-2"></i>
+                🛠 Solution
+              </h5>
+              <div class="analysis-content p-3 bg-light rounded">
+                <p class="card-text text-dark" style="white-space: pre-line">
+                  {{ parsedAnalysis.solution }}
+                </p>
+              </div>
+            </div>
+
+            <div class="analysis-item">
+              <h5 class="card-title text-success d-flex align-items-center mt-4">
+                <i class="bi bi-terminal me-2"></i>
+                🚀 Commands
+              </h5>
+              <div class="analysis-content p-3 bg-dark text-light rounded">
+                <p class="card-text" style="white-space: pre-line">
+                  {{ parsedAnalysis.commands }}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Dynamic Input List -->
-    <!-- Command Inputs -->
-    <div class="mt-4">
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <div class="form-check form-switch">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="selectAllCmd"
-            [checked]="areAllCommandsSelected()"
-            (change)="toggleSelectAllCommands($event)"
-          />
-          <label class="form-check-label" for="selectAllCmd">Select All</label>
+      <!-- Host Credentials Section -->
+      <div class="credentials-section mt-4 border p-3 rounded bg-light">
+        <div class="mb-3">
+          <h5 class="d-flex align-items-center">
+            <i class="bi bi-shield-lock me-2"></i>
+            🔐 Remote Host Credentials
+          </h5>
         </div>
-        <h5 class="mb-0">📥 Custom Commands</h5>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">
+              <i class="bi bi-pc-display me-1"></i>
+              IP Address
+            </label>
+            <input type="text" [(ngModel)]="ipAddress" class="form-control" placeholder="e.g. 192.168.1.10" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">
+              <i class="bi bi-person me-1"></i>
+              Username
+            </label>
+            <input type="text" [(ngModel)]="username" class="form-control" placeholder="e.g. admin" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">
+              <i class="bi bi-key me-1"></i>
+              Password
+            </label>
+            <div class="input-group">
+              <input [type]="showPassword ? 'text' : 'password'" class="form-control" [(ngModel)]="password" />
+              <button class="btn btn-outline-secondary" type="button" (click)="togglePasswordVisibility()">
+                <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div
-        *ngFor="let cmd of customInputs; let i = index"
-        class="input-group mb-2"
-      >
-        <div class="input-group-text">
-          <input
-            type="checkbox"
-            [(ngModel)]="cmd.selected"
-            (change)="updateSelectedCommands()"
-          />
+      <!-- Commands Section -->
+      <div class="commands-section mt-4">
+        <div class="professional-card">
+          <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="d-flex align-items-center">
+                <i class="bi bi-code-slash me-2"></i>
+                <h6 class="mb-0 fw-bold">📥 Custom Commands</h6>
+              </div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="selectAllCmd" [checked]="areAllCommandsSelected()" (change)="toggleSelectAllCommands($event)" />
+                <label class="form-check-label" for="selectAllCmd">Select All</label>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card-body">
+            <div class="commands-list">
+              <div *ngFor="let cmd of customInputs; let i = index" class="input-group mb-2">
+                <div class="input-group-text">
+                  <input type="checkbox" [(ngModel)]="cmd.selected" (change)="updateSelectedCommands()" class="form-check-input" />
+                </div>
+                <input [(ngModel)]="cmd.text" type="text" class="form-control" placeholder="Enter command..." />
+                <button class="btn btn-outline-danger" (click)="removeInput(i)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-3">
+              <button class="btn btn-sm btn-outline-secondary" (click)="addInput()">
+                <i class="bi bi-plus-circle me-2"></i>
+                ➕ Add Command
+              </button>
+              
+              <button class="btn btn-primary" (click)="executeCommands()" [disabled]="!parsedAnalysis?.commands">
+                <mat-icon class="me-2">update</mat-icon>
+                Update Solution with Commands
+              </button>
+            </div>
+          </div>
         </div>
-        <input
-          [(ngModel)]="cmd.text"
-          type="text"
-          class="form-control"
-          placeholder="Enter command..."
-        />
-        <button class="btn btn-outline-danger" (click)="removeInput(i)">
-          <mat-icon>delete</mat-icon>
-        </button>
       </div>
 
-      <button class="btn btn-sm btn-outline-secondary" (click)="addInput()">
-        ➕ Add Command
-      </button>
+      <!-- Terminal Output -->
+      <div *ngIf="executing" class="text-center my-4">
+        <div class="spinner-border text-info" role="status"></div>
+        <p class="mt-2 text-muted">Executing commands...</p>
+      </div>
+
+      <div *ngIf="executionOutput && !executing" class="mt-4">
+        <div class="professional-card">
+          <div class="card-header">
+            <h6 class="mb-0 text-muted d-flex align-items-center">
+              <i class="bi bi-terminal me-2"></i>
+              📤 Output
+            </h6>
+          </div>
+          <div class="card-body p-0">
+            <pre class="bg-dark text-light p-3 m-0 rounded-bottom" style="max-height: 300px; overflow-y: auto">{{ executionOutput }}</pre>
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <!-- Terminal Output -->
-    <div *ngIf="executing" class="text-center my-4">
-      <div class="spinner-border text-info" role="status"></div>
-    </div>
-
-    <div *ngIf="executionOutput && !executing" class="mt-4">
-      <h6 class="mb-2 text-muted">📤 Output:</h6>
-      <pre
-        class="bg-dark text-light p-3 rounded"
-        style="max-height: 300px; overflow-y: auto"
-        >{{ executionOutput }}
-      </pre>
-    </div>
-  </div>
-
-  <!-- Footer -->
-  <div
-    class="d-flex justify-content-end gap-2 align-items-center border-top px-4 py-3 bg-white shadow-sm sticky-bottom"
-  >
-    <button class="btn btn-outline-primary" (click)="analyzeSelected()">
-      Analyze
-    </button>
-    <button class="btn btn-success" (click)="executeCommands()">Execute</button>
   </div>
 </div>

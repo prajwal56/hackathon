@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class EventService {
-  private baseUrl = 'http://localhost:9090/event'; // Match your Django viewset route
+  private baseUrl = 'http://10.0.4.203:9090/event'; // Match your Django viewset route
 
   constructor(private http: HttpClient) { }
 
