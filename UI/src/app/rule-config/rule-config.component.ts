@@ -48,7 +48,7 @@ export class RuleConfigComponent implements OnInit {
   isLoading = false;
   indexOptions = [];
   fieldOptions = [];
-  operatorOptions = ['is', 'is not', 'is one of', 'is not one of', 'exists', 'does not exist', 'contains', 'starts with', 'ends with'];
+  operatorOptions = ['is', 'is not', 'is one of', 'is not one of', 'exists', 'does not exist', 'contains'];
   severityOptions = ["CRITICAL", "MAJOR", "MINOR", "WARNING"];
   typeOptions = [];
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
@@ -332,13 +332,13 @@ export class RuleConfigComponent implements OnInit {
         return { bool: { must_not: { terms: { [fieldForTerm]: values } } } };
 
       case 'contains':
-        return { wildcard: { [fieldForText]: { value: `*${rawValue}*`, case_insensitive: true } } };
+        return { match_phrase: { [fieldForText]: `*${rawValue}*` } };
 
-      case 'starts with':
-        return { wildcard: { [fieldForText]: { value: `${rawValue}*`, case_insensitive: true } } };
+      // case 'starts with':
+      //   return { match_phrase: { [fieldForText]: `${rawValue}*`} };
 
-      case 'ends with':
-        return { wildcard: { [fieldForText]: { value: `*${rawValue}`, case_insensitive: true } } };
+      // case 'ends with':
+      //   return { match_phrase: { [fieldForText]: `*${rawValue}`} };
 
       default:
         return { match: { [fieldForText]: { query: rawValue, case_insensitive: true } } };

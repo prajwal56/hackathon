@@ -25,15 +25,19 @@
       <div class="row mb-2">
         <div class="col-sm-6">
           <strong>Severity:</strong>
-          <span class="badge bg-danger" *ngIf="data.severity === 'CRITICAL'">{{
+          <span class="badge severity-critical text-dark" *ngIf="data.severity === 'CRITICAL'">{{
             data.severity
           }}</span>
           <span
-            class="badge bg-warning text-dark"
+            class="badge severity-warning text-dark"
             *ngIf="data.severity === 'WARNING'"
             >{{ data.severity }}</span
           >
-          <span class="badge bg-success" *ngIf="data.severity === 'INFO'">{{
+          <span class="badge severity-major text-dark" *ngIf="data.severity === 'MAJOR'">{{
+            data.severity
+          }}</span>
+
+          <span class="badge severity-minor text-dark" *ngIf="data.severity === 'MINOR'">{{
             data.severity
           }}</span>
         </div>
@@ -140,21 +144,25 @@
         </div>
 
         <div class="form-group position-relative d-flex align-items-center">
-          <label for="password" class="me-2 fw-bold">Password</label>
-          <input
-            [type]="showPassword ? 'text' : 'password'"
-            class="form-control"
-            id="password"
-            [(ngModel)]="password"
-            name="password"
-            required
-          />
-          <i
-            class="bi"
-            [ngClass]="showPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'"
-            (click)="togglePasswordVisibility()"
-            style="position: absolute; right: 10px; cursor: pointer"
-          ></i>
+          <div class="flex-grow-1 position-relative">
+            <label for="password" class="form-label fw-semibold"
+              >Password</label
+            >
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              class="form-control pe-5"
+              id="password"
+              [(ngModel)]="password"
+              name="password"
+              required
+            />
+            <i
+              class="bi position-absolute"
+              [ngClass]="showPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'"
+              (click)="togglePasswordVisibility()"
+              style="right: 10px; top: 38px; cursor: pointer"
+            ></i>
+          </div>
         </div>
       </div>
     </div>

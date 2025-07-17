@@ -307,9 +307,10 @@ class RulesController:
         return fields
         
         
-    def parse_es_query_to_ui(self,dsl):
+    def parse_es_query_to_ui(self, dsl):
         condition_groups = []
         must_groups = dsl.get('query', {}).get('bool', {}).get('must', [])
+
         for group in must_groups:
             bool_group = group.get('bool', {})
             if 'should' in bool_group:
@@ -318,59 +319,92 @@ class RulesController:
             else:
                 group_logic = 'AND'
                 filters = bool_group.get('must', [])
+
             parsed_filters = []
             for f in filters:
                 operator = 'is'
                 field = ''
                 value = ''
+                
                 if 'term' in f:
                     field = list(f['term'].keys())[0]
                     value = f['term'][field]
                     operator = 'is'
+
                 elif 'match' in f:
                     field = list(f['match'].keys())[0]
                     value = f['match'][field].get('query', '')
                     operator = 'match'
+
+                elif 'match_phrase' in f:
+                    field = list(f['match_phrase'].keys())[0]
+                    raw_val = f['match_phrase'][field]
+                    value = raw_val
+                    val_lower = raw_val.lower()
+
+                    if val_lower.startswith('*') and val_lower.endswith('*'):
+                        operator = 'contains'
+                        value = raw_val.strip('*')
+                    elif val_lower.startswith('*'):
+                        operator = 'ends with'
+                        value = raw_val.lstrip('*')
+                    elif val_lower.endswith('*'):
+                        operator = 'starts with'
+                        value = raw_val.rstrip('*')
+                    else:
+                        operator = 'match phrase'
+                        value = raw_val
+
                 elif 'terms' in f:
                     field = list(f['terms'].keys())[0]
                     value = f['terms'][field]
                     operator = 'is one of'
+
                 elif 'wildcard' in f:
                     field = list(f['wildcard'].keys())[0]
                     wildcard_val = f['wildcard'][field].get('value', '')
                     value = wildcard_val.replace('*', '')
                     val_lower = wildcard_val.lower()
+
                     if val_lower.startswith('*') and val_lower.endswith('*'):
                         operator = 'contains'
                     elif val_lower.startswith('*'):
                         operator = 'ends with'
                     elif val_lower.endswith('*'):
                         operator = 'starts with'
+
                 elif 'exists' in f:
                     field = f['exists']['field']
                     operator = 'exists'
+
                 elif f.get('bool', {}).get('must_not', {}).get('exists'):
                     field = f['bool']['must_not']['exists']['field']
                     operator = 'does not exist'
+
                 elif f.get('bool', {}).get('must_not', {}).get('term'):
                     field = list(f['bool']['must_not']['term'].keys())[0]
                     value = f['bool']['must_not']['term'][field]
                     operator = 'is not'
+
                 elif f.get('bool', {}).get('must_not', {}).get('terms'):
                     field = list(f['bool']['must_not']['terms'].keys())[0]
                     value = f['bool']['must_not']['terms'][field]
                     operator = 'is not one of'
+
                 parsed_filters.append({
                     'field': field,
                     'operator': operator,
                     'value': value,
-                    'logicWithNext': 'AND'  # Default, enhance if chaining logic needed
+                    'logicWithNext': 'AND'
                 })
+
             condition_groups.append({
                 'logic': group_logic,
                 'filters': parsed_filters
             })
+
         return condition_groups
+
 
 
     def get_ID(self):

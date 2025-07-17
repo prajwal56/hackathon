@@ -57,10 +57,15 @@ class RuleEngine:
                 }
             }
         }
-
-        rule['index'] = [i + "*" for i in rule.get("index", "*")]
+        if isinstance(rule.get("index"), list):
+            rule['index'] = [i + "*" for i in rule.get("index", "*")]
+        elif rule.get("index") != "*" and not isinstance(rule.get("index"), list):
+            rule['index'] = [rule.get("index", "*")+"*"]
+        else:
+            rule['index'] = "*"
+        # rule['index'] = [i + "*" for i in rule.get("index", "*")]
         query = rule.get("condition", {}).get("query", {})
-        
+
         response = self.es.search(index=rule.get("index", "*"), query=query, size=10)
         hits = response.get("hits", {}).get("hits", [])
 
@@ -82,33 +87,38 @@ class RuleEngine:
                 solution = ai_output.get('solution', "")
 
                 try:
-                    event_data = {
-                        "title": f"Rule triggered: {rule['name']}",
-                        "description": f"{len(unique_messages)} unique messages found.\n\nRCA: {rca}\n\nSolution: {solution}",
-                        "logs": list(unique_messages),
-                        "rule_name": rule.get('name',""),
-                        "severity": rule.get('alert',{}).get("severity",""),
-                    }
-
-                    api_response = requests.post(
-                        "http://localhost:9090/api/event/create_event/",
-                        json=event_data,
-                        headers={"Content-Type": "application/json"}
-                    )
-
-                    if api_response.status_code == 201:
-                        print("✅ Event created successfully.")
-                    else:
-                        print(f"❌ Failed to create event: {api_response.status_code} - {api_response.text}")
-
+                    self.create_event(rule, unique_messages, rca, solution)
                 except Exception as e:
                     print(f"❌ Error calling event API: {e}")
 
                 print("RCA:-------------------------", rca)
                 print("Solution:--------------------", solution)
-
         else:
             print("✅ No issues detected.")
+            
+    def create_event(self, rule, unique_messages, rca, solution):
+        """
+        Sends a POST request to create an event with provided details.
+        """
+        event_data = {
+            "title": f"Rule triggered: {rule['name']}",
+            "description": f"{len(unique_messages)} unique messages found.\n\nRCA: {rca}\n\nSolution: {solution}",
+            "logs": list(unique_messages),
+            "rule_name": rule.get('name', ""),
+            "severity": rule.get('alert', {}).get("severity", ""),
+        }
+
+        api_response = requests.post(
+            "http://localhost:9090/event/create_event/",
+            json=event_data,
+            headers={"Content-Type": "application/json"}
+        )
+
+        if api_response.status_code == 201:
+            print("✅ Event created successfully.")
+        else:
+            print(f"❌ Failed to create event: {api_response.status_code} - {api_response.text}")
+
 
 if __name__ == "__main__":
     engine = RuleEngine()
