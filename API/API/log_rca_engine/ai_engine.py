@@ -50,7 +50,8 @@ class AIEngine:
             "Commands must be production-safe with rollback capabilities",
             "Include step-by-step verification and success confirmations",
             "Consider conversation history and build upon previous diagnoses",
-            "Prioritize system stability and security in all recommendations"
+            "Prioritize system stability and security in all recommendations",
+            "commands shoud not have comment or explanation in the command itself, only commands should be there",
         ]
         
         self.agent = Agent(

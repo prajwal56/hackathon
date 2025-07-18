@@ -189,6 +189,9 @@ class EventController:
         result = [{"name": rule, "count": count} for rule, count in rule_counts.items()]
 
         return result
+    
+    def clear_ai_memory():
+         EventController.ai_engine.clear_session()
 
 
 

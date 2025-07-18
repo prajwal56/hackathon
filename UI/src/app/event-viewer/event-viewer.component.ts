@@ -43,6 +43,7 @@ export class EventViewerComponent {
 
   close(): void {
     this.dialogRef.close();
+    const response = this.event_service.clearAIMemory().toPromise();
   }
 
 

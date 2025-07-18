@@ -34,5 +34,8 @@ export class EventService {
   generateEvent(payload: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/generate_event/`, payload);
   }
+  clearAIMemory(): Observable<any> {
+    return this.http.post(`${this.baseUrl}/clear_ai_memory/`, {});
+  }
 }
 

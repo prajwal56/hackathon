@@ -12,7 +12,7 @@ import { EventService } from '../services/event.service';
   styleUrls: ['./event-grid.component.scss']
 })
 export class EventGridComponent implements OnInit {
-  columns = ['name', 'created_at', 'description', "severity", 'log_count', 'actions'];
+  columns = ['name', 'created_at', "severity", 'log_count', 'actions'];
   dataSource = new MatTableDataSource<any>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
