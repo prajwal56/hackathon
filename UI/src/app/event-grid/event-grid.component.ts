@@ -44,10 +44,11 @@ export class EventGridComponent implements OnInit {
       width: '70vw',
       height: '100vh',
       position: { right: '0', top: '0' },
-      panelClass: 'side-panel',
+      panelClass: ['side-panel',"no-padding-dialog"],
       data: data,
       disableClose: false,
-      autoFocus: false
+      autoFocus: false,
+
     };
 
     this.dialog.open(EventViewerComponent, config);

@@ -1,27 +1,25 @@
 <mat-toolbar class="navbar" color="primary">
   <div class="navbar-left">
-    <mat-icon>view_in_ar</mat-icon>
+    <mat-icon class="brand-icon">view_in_ar</mat-icon>
     <span class="navbar-title">Rule Engine</span>
   </div>
   <div class="navbar-right">
-    <button mat-flat-button color="accent" class="nav-btn" routerLink="/dashboard">
+    <button mat-button color="accent" class="nav-btn" routerLink="/dashboard">
       <mat-icon>dashboard</mat-icon>
-      Dashboard
+      <span>Dashboard</span>
     </button>
-    <button mat-stroked-button color="accent" class="nav-btn" routerLink="/event-generate">
+    <button mat-button color="accent" class="nav-btn" routerLink="/event-generate">
       <mat-icon>flash_on</mat-icon>
-      Event Generate
+      <span>Event Generate</span>
     </button>
-    <button mat-stroked-button color="accent" class="nav-btn" routerLink="/rule-grid">
+    <button mat-button color="accent" class="nav-btn" routerLink="/rule-grid">
       <mat-icon>tune</mat-icon>
-      Rule Config
+      <span>Rule Config</span>
     </button>
-    <button mat-flat-button color="accent" class="nav-btn" routerLink="/event-viewer">
+    <button mat-button color="accent" class="nav-btn" routerLink="/event-viewer">
       <mat-icon>visibility</mat-icon>
-      Event Viewer
+      <span>Event Viewer</span>
     </button>
-
   </div>
 </mat-toolbar>
-
 <router-outlet></router-outlet>

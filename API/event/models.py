@@ -5,12 +5,14 @@ class Event(Document):
     """
     Event model stored in MongoDB using MongoEngine.
     """
+    event_id = StringField(required=True, unique=True)
     title = StringField(required=True, max_length=255)
     description = StringField()
     logs = ListField()
     created_at = DateTimeField(default=datetime.datetime.utcnow)
     rule_name = StringField()
     severity = StringField()
+    resolved = BooleanField(default=False)
     meta = {
         'collection': 'event',
         'ordering': ['-date'],

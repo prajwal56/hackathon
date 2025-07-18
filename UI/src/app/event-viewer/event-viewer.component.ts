@@ -34,12 +34,12 @@ export class EventViewerComponent {
   username: string = '';
   password: string = '';
   showPassword = false;
-
+  resolving = false;
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private dialogRef: MatDialogRef<EventViewerComponent>,
     private event_service: EventService
-  ) {}
+  ) { }
 
   close(): void {
     this.dialogRef.close();
@@ -53,22 +53,22 @@ export class EventViewerComponent {
       this.selectedLogsMap[`${groupIndex}-${ruleIndex}-${i}`]
     );
   }
-  
+
   toggleSelectAll(event: any, groupIndex: number, ruleIndex: number): void {
     const isChecked = event.target.checked;
     const messages = this.data.logs[groupIndex].rules[ruleIndex].msg;
-  
+
     messages.forEach((_: string, i: number) => {
       this.selectedLogsMap[`${groupIndex}-${ruleIndex}-${i}`] = isChecked;
     });
-  
+
     this.updateSelectedLogs(groupIndex);
   }
-  
+
   updateSelectedLogs(groupIndex: number): void {
     this.selectedLogs = [];
     debugger;
-    this.data.logs[groupIndex].rules.forEach((rule:any, ruleIndex:any) => {
+    this.data.logs[groupIndex].rules.forEach((rule: any, ruleIndex: any) => {
       rule.msg.forEach((msg: string, i: number) => {
         if (this.selectedLogsMap[`${groupIndex}-${ruleIndex}-${i}`]) {
           const f_msg = this.data.logs[groupIndex].rules[ruleIndex].rule_name + ': ' + msg;
@@ -77,9 +77,9 @@ export class EventViewerComponent {
       });
     });
   }
-  
 
-  analyzeSelected(groupIndex: number, ip: string, analysisQuery:string,user_input=''): void {
+
+  analyzeSelected(groupIndex: number, ip: string, analysisQuery: string, user_input = ''): void {
     this.ipAddress = ip;
     this.showAnalysis = true;
     this.loading = true;
@@ -209,25 +209,57 @@ export class EventViewerComponent {
 
     // Split solution by common bullet point indicators
     const solution = this.parsedAnalysis.solution;
-    
+
     // Try to split by numbered points (1., 2., etc.)
     let points = solution.split(/\d+\.\s+/).filter(point => point.trim());
-    
+
     // If no numbered points, try bullet points (•, -, *)
     if (points.length <= 1) {
       points = solution.split(/[•\-\*]\s+/).filter(point => point.trim());
     }
-    
+
     // If still no points, try line breaks
     if (points.length <= 1) {
       points = solution.split('\n').filter(point => point.trim());
     }
-    
+
     // If still one block, return as single point
     if (points.length <= 1) {
       return [solution];
     }
-    
+
     return points.map(point => point.trim());
   }
+
+  onResolve() {
+    // [a] Show loading
+    this.resolving = true;
+
+    // [b] Call your service
+    this.markResolved(this.data?.eventId);
+  }
+
+  markResolved(data: {}) {
+    // Defensive: Check for eventId
+    if (!data) {
+      this.resolving = false;
+      return;
+    }
+    this.event_service.markResolved(data).subscribe({
+      next: (res: any) => {
+        console.log("Resolved response:", res);
+        // [c] Close sidebar here
+        this.close();      // Replace with actual close logic
+      },
+      error: (error) => {
+        console.error('Error:', error);
+        // Optional: show user feedback (toast/snackbar)
+      },
+      complete: () => {
+        // [d] Always reset loader
+        this.resolving = false;
+      }
+    });
+  }
+
 }

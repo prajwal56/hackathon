@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 
 
 export class EventService {
-  private baseUrl = 'http://10.0.4.203:9090/event'; // Match your Django viewset route
+  private baseUrl = 'http://10.0.6.222:9090/event'; // Match your Django viewset route
 
   constructor(private http: HttpClient) { }
 
@@ -33,6 +33,9 @@ export class EventService {
   }
   generateEvent(payload: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/generate_event/`, payload);
+  }
+  markResolved(eventId: {}): Observable<any> {
+    return this.http.post(`${this.baseUrl}/mark_resolved/`, { event_id: eventId });
   }
   clearAIMemory(): Observable<any> {
     return this.http.post(`${this.baseUrl}/clear_ai_memory/`, {});

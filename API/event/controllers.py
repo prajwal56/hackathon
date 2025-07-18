@@ -8,7 +8,8 @@ from datetime import datetime, timedelta
 from collections import defaultdict
 import hashlib
 from collections import Counter
-
+import paramiko
+import uuid
 class EventController:
     """
     Handles business logic for Event operations.
@@ -20,7 +21,9 @@ class EventController:
         """
         Validates and creates a new Event document.
         """
-        serializer = EventSerializer(data=request.data)
+        data = request.data
+        data['event_id'] = str(uuid.uuid4())
+        serializer = EventSerializer(data)
         if serializer.is_valid(raise_exception=True):
             event = serializer.save()
             return EventSerializer(event).data
@@ -94,8 +97,8 @@ class EventController:
         # Select script path based on event
         if event == 'unknown directive':
             script_path = '/data/scripts/nginx/unknown_directive.sh'
-        elif event == 'invalid nginx_port':
-            script_path = '/data/scripts/nginx/invalid_nginx_port.sh'
+        elif event == 'invalid nginx port':
+            script_path = '/data/scripts/nginx/invalid_nginx_unchange.sh'
         elif event == 'foreign key violation_test':
             script_path = '/data/scripts/postgresql/foreign_key_violation_test.sh'
         elif event == 'generate pg errors':
@@ -193,6 +196,17 @@ class EventController:
     def clear_ai_memory():
          EventController.ai_engine.clear_session()
 
+    def mark_resolved(request, event_id):
+        """
+        Marks an event as resolved.
+        """
+        try:
+            event = Event.objects.get(event_id=event_id)
+            event.resolved = True
+            event.save()
+            return {"message": "Event marked as resolved."}
+        except Event.DoesNotExist:
+            return {"error": "Event not found."}
 
 
         

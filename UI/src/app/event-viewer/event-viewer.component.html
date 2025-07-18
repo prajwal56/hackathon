@@ -33,11 +33,14 @@
           </div>
           <div class="info-item">
             <span class="label">Created At:</span>
-            <span class="value">{{ data.created_at | date:'medium' }}</span>
+            <span class="value">{{ data.created_at }}</span>
           </div>
           <div class="info-item">
             <span class="label">Severity:</span>
-            <span class="severity-badge" [ngClass]="'severity-' + data.severity?.toLowerCase()">
+            <span
+              class="severity-badge"
+              [ngClass]="'severity-' + data.severity?.toLowerCase()"
+            >
               {{ data.severity }}
             </span>
           </div>
@@ -50,8 +53,12 @@
       <!-- Host Header -->
       <div class="card host-card">
         <div class="card-header">
-          <h3><i class="fas fa-server"></i> {{ item.ip || 'Host ' + (j + 1) }}</h3>
-          <span class="badge">{{ item.rules?.length || 0 }} rules detected</span>
+          <h3>
+            <i class="fas fa-server"></i> {{ item.ip || "Host " + (j + 1) }}
+          </h3>
+          <span class="badge"
+            >{{ item.rules?.length || 0 }} rules detected</span
+          >
         </div>
       </div>
 
@@ -71,7 +78,9 @@
                         class="checkbox"
                       />
                       <span class="rule-name">{{ rule.rule_name }}</span>
-                      <span class="message-count">{{ rule.msg?.length || 0 }} messages</span>
+                      <span class="message-count"
+                        >{{ rule.msg?.length || 0 }} messages</span
+                      >
                     </div>
                   </td>
                 </tr>
@@ -94,7 +103,10 @@
         </div>
 
         <div class="card-footer" *ngIf="!parsedAnalysis.user_input">
-          <button class="btn btn-primary" (click)="analyzeSelected(j, item.ip, analysisQuery)">
+          <button
+            class="btn btn-primary"
+            (click)="analyzeSelected(j, item.ip, analysisQuery)"
+          >
             <i class="fas fa-search"></i> Analyze Selected Logs
           </button>
         </div>
@@ -126,7 +138,10 @@
             <div class="card-body">
               <div class="solution-content">
                 <ul class="solution-list">
-                  <li *ngFor="let point of getSolutionPoints()" class="solution-point">
+                  <li
+                    *ngFor="let point of getSolutionPoints()"
+                    class="solution-point"
+                  >
                     <i class="fas fa-check-circle solution-icon"></i>
                     <span [innerHTML]="point"></span>
                   </li>
@@ -148,11 +163,14 @@
           <!-- User Input -->
           <div *ngIf="parsedAnalysis.user_input" class="card analysis-card">
             <div class="card-header">
-              <h3><i class="fas fa-question-circle"></i> Additional Information Needed</h3>
+              <h3>
+                <i class="fas fa-question-circle"></i> Additional Information
+                Needed
+              </h3>
             </div>
             <div class="card-body">
               <p class="user-input-text">{{ parsedAnalysis.user_input }}</p>
-              
+
               <div class="form-group">
                 <label>Additional Query:</label>
                 <textarea
@@ -165,7 +183,14 @@
 
               <button
                 class="btn btn-primary"
-                (click)="analyzeSelected(j, item.ip, analysisQuery, parsedAnalysis.user_input)"
+                (click)="
+                  analyzeSelected(
+                    j,
+                    item.ip,
+                    analysisQuery,
+                    parsedAnalysis.user_input
+                  )
+                "
               >
                 <i class="fas fa-redo"></i> Analyze Again
               </button>
@@ -183,23 +208,40 @@
           <div class="form-row">
             <div class="form-group">
               <label>IP Address:</label>
-              <input type="text" class="form-control" [(ngModel)]="ipAddress" placeholder="Enter IP address">
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="ipAddress"
+                placeholder="Enter IP address"
+              />
             </div>
             <div class="form-group">
               <label>Username:</label>
-              <input type="text" class="form-control" [(ngModel)]="username" placeholder="Enter username">
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="username"
+                placeholder="Enter username"
+              />
             </div>
             <div class="form-group">
               <label>Password:</label>
               <div class="password-input">
-                <input 
-                  [type]="showPassword ? 'text' : 'password'" 
-                  class="form-control" 
-                  [(ngModel)]="password" 
+                <input
+                  [type]="showPassword ? 'text' : 'password'"
+                  class="form-control"
+                  [(ngModel)]="password"
                   placeholder="Enter password"
+                />
+                <button
+                  type="button"
+                  class="password-toggle"
+                  (click)="togglePasswordVisibility()"
                 >
-                <button type="button" class="password-toggle" (click)="togglePasswordVisibility()">
-                  <i class="fas" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                  <i
+                    class="fas"
+                    [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+                  ></i>
                 </button>
               </div>
             </div>
@@ -217,17 +259,30 @@
                 type="checkbox"
                 [checked]="areAllCommandsSelected()"
                 (change)="toggleSelectAllCommands($event)"
-              >
+              />
               Select All
             </label>
           </div>
         </div>
-        
+
         <div class="card-body">
           <div class="commands-list">
-            <div *ngFor="let cmd of customInputs; let i = index" class="command-row">
-              <input type="checkbox" [(ngModel)]="cmd.selected" (change)="updateSelectedCommands()" class="checkbox">
-              <input type="text" class="form-control" [(ngModel)]="cmd.text" placeholder="Enter command...">
+            <div
+              *ngFor="let cmd of customInputs; let i = index"
+              class="command-row"
+            >
+              <input
+                type="checkbox"
+                [(ngModel)]="cmd.selected"
+                (change)="updateSelectedCommands()"
+                class="checkbox"
+              />
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="cmd.text"
+                placeholder="Enter command..."
+              />
               <button class="btn btn-danger btn-sm" (click)="removeInput(i)">
                 <i class="fas fa-trash"></i>
               </button>
@@ -238,9 +293,9 @@
             <button class="btn btn-outline" (click)="addInput()">
               <i class="fas fa-plus"></i> Add Command
             </button>
-            <button 
-              class="btn btn-primary" 
-              (click)="executeCommands()" 
+            <button
+              class="btn btn-primary"
+              (click)="executeCommands()"
               [disabled]="!parsedAnalysis?.commands"
             >
               <i class="fas fa-play"></i> Execute Commands
@@ -260,9 +315,24 @@
           <h3><i class="fas fa-terminal"></i> Execution Output</h3>
         </div>
         <div class="card-body">
-          <pre class="command-output" [innerHTML]="executionOutput | safeHtml"></pre>
+          <pre
+            class="command-output"
+            [innerHTML]="executionOutput | safeHtml"
+          ></pre>
         </div>
       </div>
     </div>
+  </div>
+  <!-- Footer with Resolve Button -->
+  <div class="event-footer">
+    <button
+      class="btn btn-success resolve-btn"
+      (click)="onResolve()"
+      [disabled]="resolving"
+    >
+      <i class="fas fa-check"></i>
+      <span *ngIf="!resolving">Resolve</span>
+      <span *ngIf="resolving">Resolving...</span>
+    </button>
   </div>
 </div>

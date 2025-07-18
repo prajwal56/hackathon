@@ -86,6 +86,18 @@ class EventViewSet(viewsets.ViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
+    @action(detail=False, methods=['post'], url_path='mark_resolved')
+    def mark_resolved(self, request):
+        """
+        Mark an event as resolved.
+        """
+        try:
+            eveny_id = request.data.get('event_id',"")
+            data = EventController.mark_resolved(request)
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
     @action(detail=False, methods=['post'], url_path='clear_ai_memory')
     def clear_ai_memory(self, request):
         """

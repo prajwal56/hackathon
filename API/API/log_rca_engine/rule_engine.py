@@ -13,7 +13,7 @@ from collections import defaultdict
 
 class RuleEngine:
     def __init__(self):
-        dotenv_path = os.path.join("/opt/Hackathon/hackathon/API/API/settings/", '.env')
+        dotenv_path = os.path.join("D:\hackathon\hackathon\API\settings", '.env')
         # print(dotenv_path)
         load_dotenv(dotenv_path)
         # print(os.getenv("ES_HOST"))
@@ -25,7 +25,7 @@ class RuleEngine:
         self.interval = int(os.getenv("RULE_ENGINE_INTERVAL", 60))
         self.client = MongoClient(os.getenv("MONGO_URL"))
         self.db = self.client[os.getenv("MONGO_DB")]
-            # Directly access the collection
+            # Directly access the collection    
         self.collection = self.db["rules"]
 
     # def load_rules(self):
@@ -136,7 +136,7 @@ class RuleEngine:
             listed_messages.extend(message.get('msg',[]))
         event_data = {
             "title": f"Rule triggered: {rule['name']}",
-            "description": f"{len(listed_messages)} unique messages found.\n\nRCA: {rca}\n\nSolution: {solution}",
+            "description": f"{len(listed_messages)} unique messages found.",
             "logs": classify_obj,
             "rule_name": rule.get('name', ""),
             "severity": rule.get('alert', {}).get("severity", ""),

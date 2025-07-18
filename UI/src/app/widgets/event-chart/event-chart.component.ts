@@ -228,15 +228,15 @@ export class EventChartComponent implements OnInit, OnChanges {
 
   // Event handlers
   onChartClick(event: any): void {
-    if (event.data && event.data.details) {
-      this.selectedEvent = {
-        ...event.data.details,
-        severity: event.data.severity,
-        timestamp: event.data.timestamp,
-        count: event.data.value
-      };
-      this.isSidebarOpen = true;
-    }
+    // if (event.data && event.data.details) {
+    //   this.selectedEvent = {
+    //     ...event.data.details,
+    //     severity: event.data.severity,
+    //     timestamp: event.data.timestamp,
+    //     count: event.data.value
+    //   };
+    //   this.isSidebarOpen = true;
+    // }
   }
 
   closeSidebar(): void {
