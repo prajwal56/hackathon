@@ -41,3 +41,14 @@ class EventViewSet(viewsets.ViewSet):
             return Response(data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+    @action(detail=False, methods=['post'], url_path='execute_custom_commands')
+    def execute_commands(self, request):
+        """
+        Get RCA for an event.
+        """
+        try:
+            data = EventController.executeCommands(request)
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

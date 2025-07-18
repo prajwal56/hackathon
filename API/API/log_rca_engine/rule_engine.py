@@ -13,7 +13,7 @@ from collections import defaultdict
 
 class RuleEngine:
     def __init__(self):
-        dotenv_path = os.path.join("D:\hackathon\hackathon\API\settings", '.env')
+        dotenv_path = os.path.join("/opt/Hackathon/hackathon/API/API/settings/", '.env')
         # print(dotenv_path)
         load_dotenv(dotenv_path)
         # print(os.getenv("ES_HOST"))
@@ -82,17 +82,19 @@ class RuleEngine:
 
             if data:
                 unique_messages = set(data.get('msg',[]))
-                ai_output = self.ai_engine.generate_prompt(str(unique_messages))
-                rca = ai_output.get('rca', "")
-                solution = ai_output.get('solution', "")
+                # ai_output = self.ai_engine.generate_prompt(str(unique_messages))
+                # rca = ai_output.get('rca', "")
+                # solution = ai_output.get('solution', "")
+                solution = ''
+                rca = ''
 
                 try:
                     self.create_event(rule, classify_obj, rca, solution)
                 except Exception as e:
                     print(f"❌ Error calling event API: {e}")
 
-                print("RCA:-------------------------", rca)
-                print("Solution:--------------------", solution)
+                # print("RCA:-------------------------", rca)
+                # print("Solution:--------------------", solution)
         else:
             print("✅ No issues detected.")
             
@@ -111,11 +113,11 @@ class RuleEngine:
             "severity": rule.get('alert', {}).get("severity", ""),
         }
 
-                    api_response = requests.post(
-                        "http://10.0.4.203:9090/api/event/create_event/",
-                        json=event_data,
-                        headers={"Content-Type": "application/json"}
-                    )
+        api_response = requests.post(
+            "http://10.0.4.203:9090/event/create_event/",
+            json=event_data,
+            headers={"Content-Type": "application/json"}
+        )
 
         if api_response.status_code == 201:
             print("✅ Event created successfully.")
@@ -125,14 +127,23 @@ class RuleEngine:
     def group_messages_by_ip(self,hits):
         ip_map = defaultdict(list)
 
-        for hit in hits:
-            ip =  hit["_source"].get("host",{}).get("ip","0.0.0.0")
-            message =  hit["_source"].get("message")
-            if ip:
-                ip_map[ip].append(message)
+        # for hit in hits:
+        #     ip =  hit["_source"].get("host",{}).get("ip","0.0.0.0")
+        #     message =  hit["_source"].get("message")
+        #     if ip:
+        #         ip_map[ip].append(message)
+        result = []
+        for entry in hits:
+            source = entry["_source"]
+            ip = source.get("host", {}).get("ip", "0.0.0.0")
+            messages = source.get("message", [])
+            if isinstance(messages, str):
+                messages = [messages]
+            result.append({"ip": ip, "msg": messages})
 
-        grouped = [{"ip_address": ip, "msg": messages} for ip, messages in ip_map.items()]
-        return grouped
+                # grouped = [{"ip_address": ip, "msg": messages} for ip, messages in ip_map.items()]
+                # return grouped
+        return result
 
 
 if __name__ == "__main__":

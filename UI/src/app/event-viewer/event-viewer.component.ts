@@ -11,10 +11,18 @@ import { EventService } from './../services/event.service';
 export class EventViewerComponent {
   selectedLogsMap: { [key: string]: boolean } = {};
   selectedLogs: string[] = [];
-  parsedAnalysis: any;
+  parsedAnalysis = 
+    {
+      rca: '',
+      solution: '',
+      commands: '',
+      user_input: '',
+    };
+  
   showAnalysis = false;
   loading = false;
   analysisText = '';
+  analysisQuery: string = ''; 
   customInputs = [{ text: '', selected: false }];
   selectedCommands: string[] = [];
   executionOutput = '';
@@ -34,36 +42,45 @@ export class EventViewerComponent {
   close(): void {
     this.dialogRef.close();
   }
+  
 
   isAllSelected(groupIndex: number): boolean {
-    const logs = this.data.logs[groupIndex].msg[0];
+    console.log("this.data--------------------",this.data)
+    const logs = this.data.logs[groupIndex].msg;
     return logs.every((_: string, i: number) => this.selectedLogsMap[groupIndex + '-' + i]);
   }
 
   toggleSelectAll(event: any, groupIndex: number): void {
     const isChecked = event.target.checked;
-    this.data.logs[groupIndex].msg[0].forEach((_: string, i: number) => {
+    this.data.logs[groupIndex].msg.forEach((_: string, i: number) => {
       this.selectedLogsMap[groupIndex + '-' + i] = isChecked;
     });
     this.updateSelectedLogs(groupIndex);
   }
 
   updateSelectedLogs(groupIndex: number): void {
-    const logs = this.data.logs[groupIndex].msg[0];
+    const logs = this.data.logs[groupIndex].msg;
     this.selectedLogs = logs.filter((_: string, i: number) => this.selectedLogsMap[groupIndex + '-' + i]);
   }
 
-  analyzeSelected(groupIndex: number, ip: string): void {
+  analyzeSelected(groupIndex: number, ip: string, analysisQuery:string,user_input=''): void {
     this.ipAddress = ip;
     this.showAnalysis = true;
     this.loading = true;
-    this.event_service.get_event_rca(this.selectedLogs).subscribe(
+    const payload = {
+      logs: this.selectedLogs,
+      analysisQuery: analysisQuery,
+      user_input: user_input
+
+    };
+    this.event_service.get_event_rca(payload).subscribe(
       (res: any) => {
         this.analysisText = res;
         this.parsedAnalysis = {
           rca: res.rca,
           solution: res.solution,
-          commands: res.commands
+          commands: res.commands,
+          user_input: res?.user_input,
         };
         this.parseAndAddCommandsToCustomInputs(res.commands);
         this.loading = false;
@@ -87,7 +104,10 @@ export class EventViewerComponent {
       .filter(cmd => cmd.length > 0); // ensures no empty or whitespace-only commands
   
     commandLines.forEach(command => {
-      this.customInputs.push({ text: command, selected: false });
+      if (!command.startsWith('#')) {
+        this.customInputs.push({ text: command, selected: false });
+      }
+      
     });
   }
 

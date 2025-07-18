@@ -37,7 +37,7 @@
             <div class="col-sm-6">
               <div class="info-item">
                 <label class="info-label">Created At</label>
-                <div class="info-value">{{ data.created_at | date : "medium" }}</div>
+                <div class="info-value">{{ data.created_at }}</div>
               </div>
             </div>
           </div>
@@ -81,12 +81,12 @@
               <i class="bi bi-hdd-network"></i>
             </div>
             <div>
-              <h5 class="mb-0 fw-bold">{{ item.ip_address || 'Host ' + (j + 1) }}</h5>
+              <h5 class="mb-0 fw-bold">{{ item.ip || 'Host ' + (j + 1) }}</h5>
               <small class="text-muted">Remote Server</small>
             </div>
           </div>
           <div class="host-stats">
-            <span class="badge bg-primary rounded-pill">{{ item.msg[0]?.length || 0 }} logs</span>
+            <span class="badge bg-primary rounded-pill">{{ item.msg?.length || 0 }} logs</span>
           </div>
         </div>
       </div>
@@ -104,13 +104,13 @@
             <span>Select All Logs</span>
           </div>
           <div>
-            <strong>Logs for {{ item.ip_address }}</strong>
+            <strong>Logs for {{ item.ip }}</strong>
           </div>
         </div>
         <div class="flex-grow-1 overflow-auto">
           <table class="table table-sm table-hover m-0">
             <tbody>
-              <tr *ngFor="let log of item.msg[0]; let i = index" class="log-row">
+              <tr *ngFor="let log of item.msg; let i = index" class="log-row">
                 <td style="width: 30px">
                   <input
                     type="checkbox"
@@ -124,8 +124,8 @@
             </tbody>
           </table>
         </div>
-        <div class="p-2 border-top bg-light">
-          <button class="btn btn-outline-primary" (click)="analyzeSelected(j, item.ip_address)">
+        <div class="p-2 border-top bg-light" *ngIf="!parsedAnalysis.user_input">
+          <button class="btn btn-outline-primary" (click)="analyzeSelected(j, item.ip_address,analysisQuery)">
             <i class="bi bi-search me-2"></i>
             Analyze
           </button>
@@ -164,7 +164,7 @@
               </div>
             </div>
 
-            <div class="analysis-item">
+            <div class="analysis-item" *ngIf="!parsedAnalysis.user_input">
               <h5 class="card-title text-success d-flex align-items-center mt-4">
                 <i class="bi bi-terminal me-2"></i>
                 🚀 Commands
@@ -174,6 +174,39 @@
                   {{ parsedAnalysis.commands }}
                 </p>
               </div>
+            </div>
+            <div class="analysis-item" *ngIf="parsedAnalysis.user_input">
+              <h5 class="card-title text-success d-flex align-items-center mt-4">
+                <i class="bi bi-terminal me-2"></i>
+                🚀 User Input
+              </h5>
+              <div class="analysis-content p-3 bg-dark text-light rounded">
+                <p class="card-text" style="white-space: pre-line">
+                  {{ parsedAnalysis.user_input }}
+                </p>
+              </div>
+            </div>
+            <div class="analysis-input-section mb-3" *ngIf="parsedAnalysis.user_input">
+              <label class="form-label fw-semibold text-muted">
+                <i class="bi bi-chat-dots me-1"></i>
+                Analysis Query (Optional)
+              </label>
+              <textarea 
+                class="form-control analysis-textarea" 
+                [(ngModel)]="analysisQuery"
+                placeholder="Enter specific questions or focus areas for analysis (e.g., 'Focus on memory issues', 'Check for security vulnerabilities', etc.)"
+                rows="2">
+              </textarea>
+              <small class="form-text text-muted">
+                <i class="bi bi-info-circle me-1"></i>
+                Provide additional context to guide the AI analysis
+              </small>
+            </div>
+            <div class="p-2 border-top bg-light" *ngIf="parsedAnalysis.user_input">
+              <button class="btn btn-outline-primary" (click)="analyzeSelected(j, item.ip_address,analysisQuery,parsedAnalysis.user_input)">
+                <i class="bi bi-search me-2"></i>
+                Analyze
+              </button>
             </div>
           </div>
         </div>
