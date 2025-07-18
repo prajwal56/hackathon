@@ -1,25 +1,3 @@
-<!-- <div class="container">
-  <h2>Event Generator</h2>
-
-  <div class="service-grid">
-    <mat-card *ngFor="let service of services" class="service-card">
-      <mat-card-header>
-        <mat-card-title>{{service.name | uppercase}}</mat-card-title>
-      </mat-card-header>
-
-      <mat-card-content>
-        <div class="buttons">
-          <button *ngFor="let event of service.events"
-                  mat-raised-button color="primary"
-                  (click)="generateEvent(service.name, event)">
-            {{event}}
-          </button>
-        </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
-</div> -->
-
 
 <div class="container">
   <h2>Event Generator</h2>
@@ -61,27 +39,30 @@
   </div>
 
   <!-- POPUP OVERLAY OUTSIDE LOOP -->
-  <div *ngIf="showCredentialPopup" class="popup-overlay">
-    <div class="popup">
-      <h3>Enter SSH Credentials</h3>
-      <mat-form-field appearance="outline">
-        <mat-label>Hostname</mat-label>
-        <input matInput type="text" [(ngModel)]="hostname">
+<div *ngIf="showCredentialPopup" class="popup-overlay">
+  <div class="popup">
+    <h3>Enter SSH Credentials</h3>
 
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Username</mat-label>
-        <input matInput [(ngModel)]="username">
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Password</mat-label>
-        <input matInput type="password" [(ngModel)]="password">
-      </mat-form-field>
-
-      <button mat-raised-button color="primary" (click)="submitCredentials()">Submit</button>
-      <button mat-button (click)="showCredentialPopup = false">Cancel</button>
+    <button mat-stroked-button
+        color="primary"
+        [ngClass]="{'selected-ip': selectedIp === '10.0.5.78'}"
+        (click)="selectIp('10.0.5.78')">
+        10.0.5.78
+    </button>
+    <button mat-stroked-button
+          color="primary"
+          [ngClass]="{'selected-ip': selectedIp === '10.0.5.98'}"
+          (click)="selectIp('10.0.5.98')">
+          10.0.5.98
+    </button>
+    <div style="margin-bottom: 10px;">
+        <label>Username: </label> root
     </div>
+
+  <div style="margin-bottom: 10px;">
+     <label>Password: </label> ********
+  </div>
+    <button mat-raised-button color="primary" (click)="submitCredentials()">Submit</button>
+    <button mat-button (click)="showCredentialPopup = false">Cancel</button>
   </div>
 </div>

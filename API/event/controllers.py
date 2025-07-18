@@ -103,19 +103,23 @@ class EventController:
         if event == 'unknown directive':
             script_path = '/data/scripts/nginx/unknown_directive.sh'
         elif event == 'invalid nginx port':
+            script_path = '/data/scripts/nginx/invalid_nginx_port.sh'
+        elif event == 'invalid nginx unchange':
             script_path = '/data/scripts/nginx/invalid_nginx_unchange.sh'
-        elif event == 'foreign key violation_test':
-            script_path = '/data/scripts/postgresql/foreign_key_violation_test.sh'
-        elif event == 'generate pg errors':
-            script_path = '/data/scripts/postgresql/generate_pg_errors.sh'
+        elif event == 'nginx failure':
+            script_path = '/data/scripts/nginx/nginx_failure.sh'
+        elif event == 'permission denied':
+            script_path ='/data/scripts/nginx/permission_denied.sh'
         elif event == 'max connection':
             script_path = '/data/scripts/postgresql/max_connection.sh'
-        elif event == 'simulate deadlock':
-            script_path = '/data/scripts/postgresql/simulate_deadlock.sh'
-        elif event == 'unique violation test':
-            script_path = '/data/scripts/postgresql/unique_violation_test.sh'
+        elif event == 'pgsql config error':
+            script_path = '/data/scripts/postgresql/pgsql_config_error.sh'
         elif event == 'simulate redis permission error':
             script_path = '/data/scripts/redis/simulate_redis_permission_error.sh'
+        elif event == 'redis corrupt config test':
+            script_path = '/data/scripts/redis/redis_corrupt_config_test.sh'
+        elif event == 'redis port conflict':
+            script_path = '/data/scripts/redis/redis_port_conflict.sh'
         else:
             return {'message': f"No script defined for event: {event}"}
 

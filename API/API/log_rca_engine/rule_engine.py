@@ -13,7 +13,7 @@ from collections import defaultdict
 
 class RuleEngine:
     def __init__(self):
-        dotenv_path = os.path.join("D:\hackathon\hackathon\API\settings", '.env')
+        dotenv_path = os.path.join("/opt/Hackathon/hackathon/API/API/settings/.env", '.env')
         # print(dotenv_path)
         load_dotenv(dotenv_path)
         # print(os.getenv("ES_HOST"))
@@ -143,7 +143,7 @@ class RuleEngine:
         }
 
         api_response = requests.post(
-            "http://10.0.6.222:9090/event/create_event/",
+            "http://10.0.4.203:9090/event/create_event/",
             json=event_data,
             headers={"Content-Type": "application/json"}
         )

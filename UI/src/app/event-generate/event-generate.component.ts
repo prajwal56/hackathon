@@ -17,6 +17,7 @@ export class EventGenerateComponent implements OnInit {
   hostname = '';
   username = '';
   password = '';
+  selectedIp = '';
   currentServiceName = '';
   currentEvent = '';
   services: any[] = [];
@@ -25,9 +26,9 @@ export class EventGenerateComponent implements OnInit {
 
   ngOnInit(): void {
     this.services = [
-      { name: 'nginx', events: ['invalid nginx port', 'unknown directive'] },
-      { name: 'postgresql', events: ['foreign key violation test', 'generate pg errors','max connection','simulate deadlock','unique violation test'] },
-      { name: 'redis', events: ['simulate redis permission error']}
+      { name: 'nginx', events: ['invalid nginx port', 'unknown directive','invalid nginx unchange','nginx failure','permission denied'] },
+      { name: 'postgresql', events: ['max connection','pgsql config error'] },
+      { name: 'redis', events: ['simulate redis permission error','redis corrupt config test','redis port conflict']}
     ];
   }
 
@@ -68,29 +69,33 @@ export class EventGenerateComponent implements OnInit {
     this.showCredentialPopup = true;
   }
 
-  submitCredentials() {
-    const payload = {
-      service: this.currentServiceName,
-      event: this.currentEvent,
-      hostname: this.hostname,
-      username: this.username,
-      password: this.password
-    };
-    this.eventGenerateService.generateEvent(payload).subscribe(
-      (res: any) => {
-        console.log('Event generated:', res);
-        this.showCredentialPopup = false;
-        alert(`Event '${this.currentEvent}' generated for ${this.currentServiceName}`);
-        // Clear inputs after submit
-        this.hostname = '';
-        this.username = '';
-        this.password = '';
-      },
-      (err: any) => {
-        console.error('Error generating event:', err);
-        alert('Failed to generate event.');
-      }
-    );
+  selectIp(ip: string) {
+    this.hostname = ip;
+    this.selectedIp = ip;
   }
+
+ submitCredentials() {
+  const payload = {
+    service: this.currentServiceName,
+    event: this.currentEvent,
+    hostname: this.hostname,
+    username: 'root',          // hardcoded
+    password: 'hanTZ123'       // hardcoded
+  };
+
+  this.eventGenerateService.generateEvent(payload).subscribe(
+    (res: any) => {
+      console.log('Event generated:', res);
+      this.showCredentialPopup = false;
+      alert(`Event '${this.currentEvent}' generated for ${this.currentServiceName}`);
+      // Clear only hostname since username/password are hardcoded
+      this.hostname = '';
+    },
+    (err: any) => {
+      console.error('Error generating event:', err);
+      alert('Failed to generate event.');
+    }
+  );
+}
 
 }
