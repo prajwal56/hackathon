@@ -4,6 +4,11 @@ from API.log_rca_engine.ai_engine import AIEngine
 from API.log_rca_engine.ssh_interface import SSHInterface
 from datetime import datetime
 from zoneinfo import ZoneInfo 
+from datetime import datetime, timedelta
+from collections import defaultdict
+import hashlib
+from collections import Counter
+
 class EventController:
     """
     Handles business logic for Event operations.
@@ -127,5 +132,65 @@ class EventController:
             raise Exception(f"SSH Connection or Execution Failed: {str(e)}")
     
     
+    def get_5min_bucket(dt_str):
+        dt = datetime.fromisoformat(dt_str.replace('Z', '+00:00'))  # Ensure UTC parsing
+        # Round down to nearest 5 minutes
+        minute = (dt.minute // 5) * 5
+        bucket = dt.replace(minute=minute, second=0, microsecond=0)
+        return bucket.isoformat() + 'Z'
+
+    def transform_events_to_5min_summary(events):
+        
+        events = Event.objects.all()
+        events = list(EventSerializer(events, many=True).data)
+        grouped = defaultdict(lambda: {"count": 0, "titles": set()})
+
+        for event in events:
+            severity = event.get('severity', 'Unknown').capitalize()
+            created_at = event.get('created_at', {})
+            if not created_at:
+                continue
+
+            time_bucket = EventController.get_5min_bucket(created_at)
+            title = event.get('rule_name') or event.get('title', 'No Title')
+
+            key = (severity, time_bucket)
+            grouped[key]["count"] += 1
+            grouped[key]["titles"].add(title)
+
+        # Build final summary list
+        summary_data = []
+        for (severity, timestamp), info in grouped.items():
+            title_sample = next(iter(info["titles"]))
+            hash_code = hashlib.md5(title_sample.encode()).hexdigest()[:6].upper()
+            summary_data.append({
+                "severity": severity,
+                "count": info["count"],
+                "timestamp": timestamp,
+                "details": {
+                    "code": f"{severity.upper()}_{hash_code}",
+                    "desc": title_sample
+                }
+            })
+
+        return summary_data
+    
+    def get_rule_donut_chart(request):
+        """
+        Returns count of each unique rule_name from Event documents.
+        """
+        events = Event.objects.all().only("rule_name")
+        event_data = EventSerializer(events, many=True).data
+
+        # Count occurrences of each rule_name
+        rule_counts = Counter(event["rule_name"] for event in event_data if event.get("rule_name"))
+
+        # Format as list of dicts for frontend
+        result = [{"name": rule, "count": count} for rule, count in rule_counts.items()]
+
+        return result
+
+
+
         
         

@@ -34,7 +34,14 @@ import { EventGridComponent } from './event-grid/event-grid.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { EventGenerateComponent } from './event-generate/event-generate.component';
 
-
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { WidgetRendererComponent } from './components/widget-renderer/widget-renderer.component';
+import { ErrorSummaryComponent } from './widgets/error-summary/error-summary.component';
+import { RuleHitsComponent } from './widgets/rule-hits/rule-hits.component';
+import { GridsterModule } from 'angular-gridster2';
+import { EventChartComponent } from './widgets/event-chart/event-chart.component';
+import { NgxEchartsModule } from 'ngx-echarts';
+import { RuleDonutComponent } from './widgets/rule-donut/rule-donut.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -42,6 +49,12 @@ import { EventGenerateComponent } from './event-generate/event-generate.componen
     RuleConfigComponent,
     EventViewerComponent,
     EventGridComponent,
+    DashboardComponent,
+    WidgetRendererComponent,
+    ErrorSummaryComponent,
+    RuleHitsComponent,
+    EventChartComponent,
+    RuleDonutComponent,
     EventGenerateComponent,
   ],
   imports: [
@@ -67,7 +80,11 @@ import { EventGenerateComponent } from './event-generate/event-generate.componen
     MatDividerModule,
     MatAutocompleteModule,
     NgSelectModule,
-    MatDialogModule
+    MatDialogModule,
+    GridsterModule,
+     NgxEchartsModule.forRoot({
+      echarts: () => import('echarts')
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,0 +1,268 @@
+<div class="rule-widget-container">
+  <div class="rule-widget" [class.sidebar-open]="isSidebarOpen">
+    <!-- Widget Header -->
+    <div class="widget-header">
+      <div class="header-content">
+        <div class="widget-title">
+          <span class="title-icon">📊</span>
+          <h3>Rule Execution Overview</h3>
+        </div>
+        <div class="widget-subtitle">
+          <span class="total-rules">{{ getTotalRules() }} Total Rules</span>
+          <span class="last-updated">Updated {{ getLastUpdated() }}</span>
+        </div>
+      </div>
+      <div class="widget-actions">
+        <button class="action-btn" (click)="refreshData()" title="Refresh Data">
+          <span class="btn-icon">🔄</span>
+        </button>
+        <button class="action-btn" (click)="exportData()" title="Export Data">
+          <span class="btn-icon">📥</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Widget Content -->
+    <div class="widget-content">
+      <div class="chart-container">
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="loading-state">
+          <div class="spinner"></div>
+          <p>Loading chart data...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!isLoading && (!rulesData || rulesData.length === 0)" class="empty-state">
+          <div class="empty-icon">📋</div>
+          <h4>No Rules Found</h4>
+          <p>Start by creating your first rule to see execution statistics</p>
+          <button class="btn btn-primary" (click)="createRule()">
+            <span class="btn-icon">➕</span>
+            Create Rule
+          </button>
+        </div>
+
+        <!-- Chart with Data -->
+        <div *ngIf="!isLoading && rulesData && rulesData.length > 0" class="chart-wrapper">
+          <div class="chart-section">
+            <div echarts [options]="chartOptions" class="donut-chart"></div>
+
+            <!-- Center Statistics -->
+            <div class="chart-center-stats">
+              <div class="center-metric">
+                <span class="metric-value">{{ getTotalRules() }}</span>
+                <span class="metric-label">Total Rules</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Legend Section -->
+          <div class="legend-section">
+            <h4 class="legend-title">Rule Breakdown</h4>
+            <div class="legend-items">
+              <div
+                *ngFor="let item of rulesData; let i = index"
+                class="legend-item"
+                [class.active]="selectedRule === item.name"
+                (click)="selectRule(item.name)"
+              >
+                <div class="legend-indicator" [style.background-color]="colorMap.get(item.name)"></div>
+                <div class="legend-content">
+                  <div class="legend-name">{{ item.name }}</div>
+                  <div class="legend-stats">
+                    <span class="legend-count">{{ item.count }}</span>
+                    <span class="legend-percentage">{{ getPercentage(item.count) }}%</span>
+                  </div>
+                </div>
+                <div class="legend-actions">
+                  <button class="legend-action" (click)="viewRuleDetails(item)" title="View Details">
+                    <span class="action-icon">👁️</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Widget Footer -->
+    <div class="widget-footer">
+      <div class="footer-stats">
+        <div class="stat-item">
+          <span class="stat-label">Most Active:</span>
+          <span class="stat-value">{{ getMostActiveRule() }}</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Success Rate:</span>
+          <span class="stat-value success-rate">{{ getSuccessRate() }}%</span>
+        </div>
+      </div>
+      <div class="footer-actions">
+        <button class="footer-btn" (click)="viewAllRules()">
+          <span class="footer-btn-text">View All Rules</span>
+          <span class="btn-arrow">→</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="rule-sidebar" [class.open]="isSidebarOpen">
+    <div class="sidebar-overlay" (click)="closeSidebar()"></div>
+
+    <div class="sidebar-content">
+      <!-- Sidebar Header -->
+      <div class="sidebar-header">
+        <div class="sidebar-title">
+          <span class="sidebar-icon">📋</span>
+          <h3>Rule Details</h3>
+        </div>
+        <button class="close-btn" (click)="closeSidebar()">
+          <span class="close-icon">✕</span>
+        </button>
+      </div>
+
+      <!-- Sidebar Body -->
+      <div class="sidebar-body">
+        <!-- Loading State -->
+        <div *ngIf="isLoadingDetails" class="sidebar-loading">
+          <div class="loading-spinner"></div>
+          <p>Loading rule details...</p>
+        </div>
+
+        <!-- Rule Details -->
+        <div *ngIf="!isLoadingDetails && sidebarData" class="rule-details">
+          <!-- Rule Header -->
+          <div class="rule-header">
+            <div class="rule-title-section">
+              <h4 class="rule-title">{{ sidebarData.title }}</h4>
+              <div class="rule-meta">
+                <span class="rule-id">ID: {{ sidebarData._id.$oid }}</span>
+                <span class="rule-date">{{ formatDate(sidebarData.created_at) }}</span>
+              </div>
+            </div>
+            <div class="severity-badge" [style.background-color]="getSeverityColor(sidebarData.severity)">
+              <span class="severity-icon">{{ getSeverityIcon(sidebarData.severity) }}</span>
+              <span class="severity-text">{{ sidebarData.severity }}</span>
+            </div>
+          </div>
+
+          <!-- Rule Description -->
+          <div class="rule-section">
+            <h5 class="section-title">
+              <span class="section-icon">📝</span>
+              Description & Analysis
+            </h5>
+            <div class="description-content">
+              <pre class="description-text">{{ sidebarData.description }}</pre>
+            </div>
+          </div>
+
+          <!-- Logs Section -->
+          <div class="rule-section">
+            <h5 class="section-title">
+              <span class="section-icon">📊</span>
+              Log Details
+            </h5>
+            <div class="logs-container">
+              <div class="logs-table-wrapper">
+                <table class="logs-table">
+                  <thead>
+                    <tr>
+                      <th>IP Address</th>
+                      <th class="desktop-only">Log Messages</th>
+                      <th>Timestamp</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let log of sidebarData.logs; let i = index">
+                      <td>
+                        <div class="ip-address">
+                          <span class="ip-icon">🌐</span>
+                          {{ log.ip_address }}
+                        </div>
+                      </td>
+                      <td class="desktop-only">
+                        <div class="log-messages">
+                          <div *ngFor="let msgGroup of log.msg; let j = index" class="message-group">
+                            <div *ngFor="let message of msgGroup; let k = index" class="log-message">
+                              <span class="message-text">{{ message }}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="timestamp">
+                          <span class="time-icon">⏰</span>
+                          <span class="timestamp-text">{{ formatDate(sidebarData.created_at) }}</span>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="status-badge error">
+                          <span class="status-icon">❌</span>
+                          <span class="status-text">Error</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Summary Stats -->
+          <div class="rule-section">
+            <h5 class="section-title">
+              <span class="section-icon">📈</span>
+              Summary Statistics
+            </h5>
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-content">
+                  <div class="stat-value">{{ getTotalLogEntries() }}</div>
+                  <div class="stat-label">Log Entries</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon">🔍</div>
+                <div class="stat-content">
+                  <div class="stat-value">{{ getTotalMessages() }}</div>
+                  <div class="stat-label">Total Messages</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon">🌐</div>
+                <div class="stat-content">
+                  <div class="stat-value">{{ getUniqueIPs() }}</div>
+                  <div class="stat-label">Unique IPs</div>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-content">
+                  <div class="stat-value">{{ sidebarData.severity }}</div>
+                  <div class="stat-label">Severity</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <button class="sidebar-btn secondary" (click)="closeSidebar()">
+          <span class="btn-icon">👈</span>
+          <span class="btn-text">Close</span>
+        </button>
+        <button class="sidebar-btn primary">
+          <span class="btn-icon">🔧</span>
+          <span class="btn-text">Take Action</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

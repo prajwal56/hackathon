@@ -1,0 +1,16 @@
+<ng-container [ngSwitch]="widgetType">
+  <app-error-summary *ngSwitchCase="'error-summary'"></app-error-summary>
+  <app-rule-hits *ngSwitchCase="'rule-hits'"></app-rule-hits>
+  <app-event-grid *ngSwitchCase="'event-grid'"></app-event-grid>
+  <app-rule-grid *ngSwitchCase="'rule-grid'"></app-rule-grid>
+  <app-event-chart
+    *ngSwitchCase="'event-chart'"
+    [eventData]="eventSummaryData"
+    (eventHovered)="showEventDetail($event)"
+  ></app-event-chart>
+  <app-rule-donut *ngSwitchCase="'rule-donut'" [rulesData]="rules"></app-rule-donut>
+
+  <div *ngSwitchDefault class="p-3 text-center text-muted">
+    Unknown widget type: {{ widgetType }}
+  </div>
+</ng-container>

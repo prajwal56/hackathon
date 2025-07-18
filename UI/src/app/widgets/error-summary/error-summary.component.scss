@@ -1,0 +1,17 @@
+.icon-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.hover-translate {
+  transition: transform 0.2s ease;
+}
+
+.hover-translate:hover {
+  transform: translateY(-4px);
+}
+
+.ribbon-bg {
+  background: radial-gradient(circle at top right, #f8d7da 10%, transparent 70%);
+}

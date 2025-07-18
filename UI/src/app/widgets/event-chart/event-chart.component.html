@@ -1,0 +1,294 @@
+<div class="event-chart-container">
+  <!-- Main Chart Widget -->
+  <div class="chart-widget" [class.sidebar-open]="isSidebarOpen">
+
+    <!-- Widget Header -->
+    <div class="widget-header">
+      <div class="header-content">
+        <div class="widget-title">
+          <span class="title-icon">📈</span>
+          <h3>Event Trend Analysis</h3>
+        </div>
+        <div class="widget-subtitle">
+          <span class="subtitle-text">Real-time monitoring of system events</span>
+        </div>
+      </div>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <div class="chart-controls">
+          <button
+            class="control-btn"
+            [class.active]="chartViewMode === 'line'"
+            (click)="changeChartView('line')"
+            title="Line Chart"
+          >
+            <span class="control-icon">📈</span>
+          </button>
+          <button
+            class="control-btn"
+            [class.active]="chartViewMode === 'area'"
+            (click)="changeChartView('area')"
+            title="Area Chart"
+          >
+            <span class="control-icon">🏔️</span>
+          </button>
+          <button
+            class="control-btn"
+            [class.active]="chartViewMode === 'bar'"
+            (click)="changeChartView('bar')"
+            title="Bar Chart"
+          >
+            <span class="control-icon">📊</span>
+          </button>
+        </div>
+
+        <div class="action-buttons">
+          <button class="action-btn" (click)="refreshData()" title="Refresh">
+            <span class="btn-icon">🔄</span>
+          </button>
+          <button class="action-btn" (click)="exportData()" title="Export">
+            <span class="btn-icon">📥</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary Stats -->
+    <div class="summary-stats">
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ totalEvents }}</div>
+          <div class="stat-label">Total Events</div>
+        </div>
+      </div>
+
+      <div class="stat-card critical">
+        <div class="stat-icon">🚨</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ criticalEvents }}</div>
+          <div class="stat-label">Critical Events</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ averageEventsPerHour }}</div>
+          <div class="stat-label">Events/Hour</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">🎯</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ mostActiveSeverity }}</div>
+          <div class="stat-label">Most Active</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart Container -->
+    <div class="chart-section">
+      <div class="chart-wrapper">
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="loading-overlay">
+          <div class="spinner"></div>
+          <p>Loading chart data...</p>
+        </div>
+
+        <!-- Chart -->
+        <div
+          echarts
+          [options]="chartOption"
+          (chartClick)="onChartClick($event)"
+          class="main-chart"
+        ></div>
+      </div>
+    </div>
+
+    <!-- Event Summary Table -->
+    <div class="table-section">
+      <div class="table-header">
+        <h4 class="table-title">
+          <span class="table-icon">📋</span>
+          Event Summary
+        </h4>
+        <div class="table-actions">
+          <button class="table-action-btn">
+            <span class="btn-icon">🔍</span>
+            Filter
+          </button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="events-table">
+          <thead>
+            <tr>
+              <th>Severity</th>
+              <th>Timestamp</th>
+              <th>Count</th>
+              <th>Code</th>
+              <th>Description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let event of eventData; let i = index" class="table-row">
+              <td>
+                <div class="severity-badge" [class]="getStatusBadgeClass(event.severity)">
+                  <span class="severity-icon">{{ getSeverityIcon(event.severity) }}</span>
+                  <span class="severity-text">{{ event.severity }}</span>
+                </div>
+              </td>
+              <td>
+                <div class="timestamp-cell">
+                  <span class="timestamp-primary">{{ formatDate(event.timestamp) }}</span>
+                </div>
+              </td>
+              <td>
+                <div class="count-cell">
+                  <span class="count-badge">{{ event.count }}</span>
+                </div>
+              </td>
+              <td>
+                <div class="code-cell">
+                  <code class="event-code">{{ event.details?.code || 'N/A' }}</code>
+                </div>
+              </td>
+              <td>
+                <div class="description-cell">
+                  <span class="description-text">{{ event.details?.desc || 'No description' }}</span>
+                </div>
+              </td>
+              <td>
+                <div class="action-cell">
+                  <button
+                    class="row-action-btn"
+                    (click)="selectedEvent = event; isSidebarOpen = true"
+                    title="View Details"
+                  >
+                    <span class="action-icon">👁️</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Event Details Sidebar -->
+  <div class="event-sidebar" [class.open]="isSidebarOpen">
+    <div class="sidebar-overlay" (click)="closeSidebar()"></div>
+
+    <div class="sidebar-content">
+      <!-- Sidebar Header -->
+      <div class="sidebar-header">
+        <div class="sidebar-title">
+          <span class="sidebar-icon">🔍</span>
+          <h3>Event Details</h3>
+        </div>
+        <button class="close-btn" (click)="closeSidebar()">
+          <span class="close-icon">✕</span>
+        </button>
+      </div>
+
+      <!-- Sidebar Body -->
+      <div class="sidebar-body">
+        <div *ngIf="selectedEvent" class="event-details">
+
+          <!-- Event Header -->
+          <div class="event-header">
+            <div class="event-severity">
+              <div class="severity-badge large" [class]="getStatusBadgeClass(selectedEvent.severity)">
+                <span class="severity-icon">{{ getSeverityIcon(selectedEvent.severity) }}</span>
+                <span class="severity-text">{{ selectedEvent.severity }}</span>
+              </div>
+            </div>
+            <div class="event-meta">
+              <div class="meta-item">
+                <span class="meta-label">Timestamp:</span>
+                <span class="meta-value">{{ formatDate(selectedEvent.timestamp) }}</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Count:</span>
+                <span class="meta-value">{{ selectedEvent.count }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Event Properties -->
+          <div class="event-section">
+            <h5 class="section-title">
+              <span class="section-icon">📋</span>
+              Event Properties
+            </h5>
+            <div class="properties-grid">
+              <div class="property-item">
+                <div class="property-label">Code</div>
+                <div class="property-value">
+                  <code>{{ selectedEvent.details?.code || 'N/A' }}</code>
+                </div>
+              </div>
+              <div class="property-item">
+                <div class="property-label">Description</div>
+                <div class="property-value">
+                  {{ selectedEvent.details?.desc || 'No description available' }}
+                </div>
+              </div>
+              <div class="property-item">
+                <div class="property-label">Source</div>
+                <div class="property-value">
+                  {{ selectedEvent.details?.source || 'Unknown' }}
+                </div>
+              </div>
+              <div class="property-item">
+                <div class="property-label">Category</div>
+                <div class="property-value">
+                  {{ selectedEvent.details?.category || 'Uncategorized' }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Raw Event Data -->
+          <div class="event-section">
+            <h5 class="section-title">
+              <span class="section-icon">🔧</span>
+              Raw Event Data
+            </h5>
+            <div class="raw-data-container">
+              <pre class="raw-data">{{ selectedEvent | json }}</pre>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="event-section">
+            <h5 class="section-title">
+              <span class="section-icon">⚡</span>
+              Actions
+            </h5>
+            <div class="action-buttons">
+              <button class="action-btn primary">
+                <span class="btn-icon">🚨</span>
+                Create Alert
+              </button>
+              <button class="action-btn secondary">
+                <span class="btn-icon">📝</span>
+                Add Note
+              </button>
+              <button class="action-btn secondary">
+                <span class="btn-icon">🔍</span>
+                Investigate
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

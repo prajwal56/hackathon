@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class EventService {
-  private baseUrl = 'http://10.0.4.203:9090/event'; // Match your Django viewset route
+  private baseUrl = 'http://10.0.6.222:9090/event'; // Match your Django viewset route
 
   constructor(private http: HttpClient) { }
 
@@ -20,6 +20,14 @@ export class EventService {
 
   executeCustomCommands(data: any): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/execute_custom_commands/`, data);
+  }
+
+  get_event_rca_list(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/get_event_chart/`,{});
+  }
+
+  get_rule_donut_chart(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/get_rule_donut_chart/`,{});
   }
   generateEvent(payload: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/generate_event/`, payload);

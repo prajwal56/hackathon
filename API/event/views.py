@@ -41,6 +41,28 @@ class EventViewSet(viewsets.ViewSet):
             return Response(data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=False, methods=['get'], url_path='get_event_chart')
+    def get_event_chart(self, request):
+        """
+        Get chart data for an event.
+        """
+        try:
+            data = EventController.transform_events_to_5min_summary(request)
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+    @action(detail=False, methods=['get'], url_path='get_rule_donut_chart')
+    def get_rule_donut_chart(self, request):
+        """
+        Get donut chart data for rules.
+        """
+        try:
+            data = EventController.get_rule_donut_chart(request)
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
     @action(detail=False, methods=['post'], url_path='execute_custom_commands')
     def execute_commands(self, request):

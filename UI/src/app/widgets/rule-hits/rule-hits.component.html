@@ -1,0 +1,8 @@
+<div class="p-3 border rounded shadow-sm bg-white">
+  <h5>⚙️ Rule Hits</h5>
+  <ul>
+    <li *ngFor="let rule of rules">
+      {{ rule.name }} — <strong>{{ rule.count }}</strong>
+    </li>
+  </ul>
+</div>

@@ -21,7 +21,7 @@ from mongoengine import connect
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Path to the .env file inside the settings folder
-dotenv_path = os.path.join("/opt/Hackathon/hackathon/API/API/settings", '.env')
+dotenv_path = os.path.join("D:\hackathon\hackathon\API\settings", '.env')
 print(dotenv_path)
 load_dotenv(dotenv_path)
 
@@ -34,7 +34,7 @@ SECRET_KEY = 'django-insecure-f5jy9#dvg46tt(6h-+afirr=g)mfh0anutg-v70+&5#5*cffyn
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["http://10.0.4.203:4200","http://10.0.4.203","http://10.0.4.203:9090","10.0.4.203"]
+ALLOWED_HOSTS = ["http://10.0.4.203:4200","http://10.0.4.203","http://10.0.4.203:9090","10.0.4.203","http://localhost:4200","http://localhost:9090","localhost","10.0.6.222"]
 
 
 # Application definition
@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'rules',
     "event",
 ]
-
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
