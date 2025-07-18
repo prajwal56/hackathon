@@ -1,0 +1,87 @@
+<!-- <div class="container">
+  <h2>Event Generator</h2>
+
+  <div class="service-grid">
+    <mat-card *ngFor="let service of services" class="service-card">
+      <mat-card-header>
+        <mat-card-title>{{service.name | uppercase}}</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="buttons">
+          <button *ngFor="let event of service.events"
+                  mat-raised-button color="primary"
+                  (click)="generateEvent(service.name, event)">
+            {{event}}
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div> -->
+
+
+<div class="container">
+  <h2>Event Generator</h2>
+
+  <div class="service-grid">
+    <!-- <mat-card *ngFor="let service of services" class="service-card" text-acenter [ngStyle]="{'background-color': service.color}"> -->
+    <mat-card *ngFor="let service of services" class="service-card shadow-sm" [ngStyle]="{'background-color': service.color}">
+      <mat-card-header>
+        <mat-card-title style="text-align: center; width: 100%;">
+              {{service.name | uppercase}}
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="buttons">
+          <div *ngFor="let event of service.events" class="event-button-container">
+            <div class="button-with-info">
+              <button mat-raised-button color="primary" class ='fixed-width-button' (click)="openCredentialDialog(service.name, event)">
+                {{event}}
+              </button>
+
+              <button mat-icon-button (click)="toggleDescription(event)">
+                <mat-icon style="font-size:18px; color:grey;">info</mat-icon>
+              </button>
+            </div>
+
+            <!-- Description card -->
+            <div class="description-wrapper">
+              <mat-card *ngIf="shownDescription === event" class="description-card">
+                <mat-card-content>
+                  {{ getDescriptionForEvent(event) }}
+                </mat-card-content>
+              </mat-card>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- POPUP OVERLAY OUTSIDE LOOP -->
+  <div *ngIf="showCredentialPopup" class="popup-overlay">
+    <div class="popup">
+      <h3>Enter SSH Credentials</h3>
+      <mat-form-field appearance="outline">
+        <mat-label>Hostname</mat-label>
+        <input matInput type="text" [(ngModel)]="hostname">
+
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Username</mat-label>
+        <input matInput [(ngModel)]="username">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" [(ngModel)]="password">
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" (click)="submitCredentials()">Submit</button>
+      <button mat-button (click)="showCredentialPopup = false">Cancel</button>
+    </div>
+  </div>
+</div>

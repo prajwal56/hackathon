@@ -21,4 +21,7 @@ export class EventService {
   executeCustomCommands(data: any): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/execute_custom_commands/`, data);
   }
+  generateEvent(payload: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/generate_event/`, payload);
+  }
 }

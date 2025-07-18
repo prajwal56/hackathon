@@ -70,6 +70,61 @@ class EventController:
                 return res_data
         except Exception as e:
                 return {"error": str(e)}
+            
+            
+    @staticmethod
+    def generate_event(request):
+        service = request.data.get('service')
+        event = request.data.get('event')
+
+        if not service or not event:
+            raise Exception('Service and event are required.')
+
+        # SSH connection details
+        hostname = request.data.get('hostname')
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+
+        # Select script path based on event
+        if event == 'unknown directive':
+            script_path = '/data/scripts/nginx/unknown_directive.sh'
+        elif event == 'invalid nginx_port':
+            script_path = '/data/scripts/nginx/invalid_nginx_port.sh'
+        elif event == 'foreign key violation_test':
+            script_path = '/data/scripts/postgresql/foreign_key_violation_test.sh'
+        elif event == 'generate pg errors':
+            script_path = '/data/scripts/postgresql/generate_pg_errors.sh'
+        elif event == 'max connection':
+            script_path = '/data/scripts/postgresql/max_connection.sh'
+        elif event == 'simulate deadlock':
+            script_path = '/data/scripts/postgresql/simulate_deadlock.sh'
+        elif event == 'unique violation test':
+            script_path = '/data/scripts/postgresql/unique_violation_test.sh'
+        elif event == 'simulate redis permission error':
+            script_path = '/data/scripts/redis/simulate_redis_permission_error.sh'
+        else:
+            return {'message': f"No script defined for event: {event}"}
+
+        # Connect via SSH and execute
+        try:
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            ssh.connect(hostname, username=username, password=password)
+
+            stdin, stdout, stderr = ssh.exec_command(f'bash {script_path}')
+            output = stdout.read().decode()
+            error = stderr.read().decode()
+
+            ssh.close()
+
+            # if error:
+            #     raise Exception(f"Script Error: {error}")
+
+            return {'message': output}
+
+        except Exception as e:
+            raise Exception(f"SSH Connection or Execution Failed: {str(e)}")
     
     
         

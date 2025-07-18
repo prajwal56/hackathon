@@ -32,6 +32,8 @@ import { EventGridComponent } from './event-grid/event-grid.component';
 // import { MatIconModule } from '@angular/material/icon';
 // import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule } from '@angular/material/dialog';
+import { EventGenerateComponent } from './event-generate/event-generate.component';
+
 
 @NgModule({
   declarations: [
@@ -40,6 +42,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     RuleConfigComponent,
     EventViewerComponent,
     EventGridComponent,
+    EventGenerateComponent,
   ],
   imports: [
     BrowserModule,

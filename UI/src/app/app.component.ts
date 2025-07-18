@@ -16,4 +16,7 @@ export class AppComponent {
   goToEventViewer() {
     this.router.navigate(['/event-viewer']);
   }
+   goToEventGenarator(){
+    this.router.navigate(['/event-generate']);
+  }
 }

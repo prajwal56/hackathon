@@ -52,3 +52,14 @@ class EventViewSet(viewsets.ViewSet):
             return Response(data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+    @action(detail=False, methods=['post'], url_path='generate_event')
+    def generate_event(self, request):
+        """
+        Generate event and run corresponding script based on event name.
+        """
+        try:
+            data = EventController.generate_event(request)
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
