@@ -119,7 +119,8 @@ class RuleEngine:
             response = self.es.search(index=rule.get("index", "*"), query=query, size=10)
             hits = response.get("hits", {}).get("hits", [])
             if hits:
-                hits[0]['rule_name'] = rule.get("name", "")
+                for hit in hits:
+                    hit['rule_name'] = rule.get("name", "")
             return hits
         except Exception as e:
             print(f"❌ Error calling event API: {e}")

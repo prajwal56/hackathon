@@ -66,11 +66,12 @@ export class EventViewerComponent {
   
   updateSelectedLogs(groupIndex: number): void {
     this.selectedLogs = [];
-  
+    debugger;
     this.data.logs[groupIndex].rules.forEach((rule:any, ruleIndex:any) => {
       rule.msg.forEach((msg: string, i: number) => {
         if (this.selectedLogsMap[`${groupIndex}-${ruleIndex}-${i}`]) {
-          this.selectedLogs.push(msg);
+          const f_msg = this.data.logs[groupIndex].rules[ruleIndex].rule_name + ': ' + msg;
+          this.selectedLogs.push(f_msg);
         }
       });
     });
@@ -87,6 +88,7 @@ export class EventViewerComponent {
       user_input: user_input
 
     };
+    this.customInputs = []
     this.event_service.get_event_rca(payload).subscribe(
       (res: any) => {
         // console.log("res>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",res)
@@ -197,5 +199,34 @@ export class EventViewerComponent {
     } finally {
       this.executing = false;
     }
+  }
+
+  getSolutionPoints(): string[] {
+    if (!this.parsedAnalysis?.solution) {
+      return [];
+    }
+
+    // Split solution by common bullet point indicators
+    const solution = this.parsedAnalysis.solution;
+    
+    // Try to split by numbered points (1., 2., etc.)
+    let points = solution.split(/\d+\.\s+/).filter(point => point.trim());
+    
+    // If no numbered points, try bullet points (•, -, *)
+    if (points.length <= 1) {
+      points = solution.split(/[•\-\*]\s+/).filter(point => point.trim());
+    }
+    
+    // If still no points, try line breaks
+    if (points.length <= 1) {
+      points = solution.split('\n').filter(point => point.trim());
+    }
+    
+    // If still one block, return as single point
+    if (points.length <= 1) {
+      return [solution];
+    }
+    
+    return points.map(point => point.trim());
   }
 }
