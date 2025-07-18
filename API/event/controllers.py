@@ -10,6 +10,7 @@ import hashlib
 from collections import Counter
 import paramiko
 import uuid
+
 class EventController:
     """
     Handles business logic for Event operations.
@@ -21,12 +22,16 @@ class EventController:
         """
         Validates and creates a new Event document.
         """
-        data = request.data
+        data = request.data.copy()  # Ensure mutable
         data['event_id'] = str(uuid.uuid4())
-        serializer = EventSerializer(data)
-        if serializer.is_valid(raise_exception=True):
+
+        serializer = EventSerializer(data=data)
+        if serializer.is_valid():
             event = serializer.save()
-            return EventSerializer(event).data
+            return {"message": "Event created successfully", "event_id": event.event_id}
+        else:
+            return {"error": serializer.errors}
+            
         
     @staticmethod
     def get_event_list(request):
@@ -182,7 +187,7 @@ class EventController:
         """
         Returns count of each unique rule_name from Event documents.
         """
-        events = Event.objects.all().only("rule_name")
+        events = Event.objects.filter(resolved=True).only("rule_name")
         event_data = EventSerializer(events, many=True).data
 
         # Count occurrences of each rule_name

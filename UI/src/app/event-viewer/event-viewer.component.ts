@@ -236,7 +236,7 @@ export class EventViewerComponent {
     this.resolving = true;
 
     // [b] Call your service
-    this.markResolved(this.data?.eventId);
+    this.markResolved(this.data?.event_id);
   }
 
   markResolved(data: {}) {

@@ -143,7 +143,7 @@ class RuleEngine:
         }
 
         api_response = requests.post(
-            "http://10.0.4.203:9090/event/create_event/",
+            "http://10.0.6.222:9090/event/create_event/",
             json=event_data,
             headers={"Content-Type": "application/json"}
         )

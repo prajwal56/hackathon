@@ -5,7 +5,7 @@ class Event(Document):
     """
     Event model stored in MongoDB using MongoEngine.
     """
-    event_id = StringField(required=True, unique=True)
+    event_id = StringField()
     title = StringField(required=True, max_length=255)
     description = StringField()
     logs = ListField()
