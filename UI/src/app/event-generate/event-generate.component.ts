@@ -26,7 +26,7 @@ export class EventGenerateComponent implements OnInit {
 
   ngOnInit(): void {
     this.services = [
-      { name: 'nginx', events: ['invalid nginx port', 'unknown directive','invalid nginx unchange','nginx failure','permission denied'] },
+      { name: 'nginx', events: ['unknown directive','invalid nginx port','nginx failure','permission denied'] },
       { name: 'postgresql', events: ['max connection','pgsql config error'] },
       { name: 'redis', events: ['simulate redis permission error','redis corrupt config test','redis port conflict']}
     ];

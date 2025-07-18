@@ -102,9 +102,7 @@ class EventController:
         # Select script path based on event
         if event == 'unknown directive':
             script_path = '/data/scripts/nginx/unknown_directive.sh'
-        elif event == 'invalid nginx port':
-            script_path = '/data/scripts/nginx/invalid_nginx_port.sh'
-        elif event == 'invalid nginx unchange':
+        elif event == 'invalid nginx code':
             script_path = '/data/scripts/nginx/invalid_nginx_unchange.sh'
         elif event == 'nginx failure':
             script_path = '/data/scripts/nginx/nginx_failure.sh'
