@@ -46,24 +46,36 @@ export class EventViewerComponent {
   }
 
 
-  isAllSelected(groupIndex: number): boolean {
-    // console.log("this.data--------------------",this.data)
-    const logs = this.data.logs[groupIndex].msg;
-    return logs.every((_: string, i: number) => this.selectedLogsMap[groupIndex + '-' + i]);
+  isAllSelected(groupIndex: number, ruleIndex: number): boolean {
+    const messages = this.data.logs[groupIndex].rules[ruleIndex].msg;
+    return messages.every((_: string, i: number) =>
+      this.selectedLogsMap[`${groupIndex}-${ruleIndex}-${i}`]
+    );
   }
-
-  toggleSelectAll(event: any, groupIndex: number): void {
+  
+  toggleSelectAll(event: any, groupIndex: number, ruleIndex: number): void {
     const isChecked = event.target.checked;
-    this.data.logs[groupIndex].msg.forEach((_: string, i: number) => {
-      this.selectedLogsMap[groupIndex + '-' + i] = isChecked;
+    const messages = this.data.logs[groupIndex].rules[ruleIndex].msg;
+  
+    messages.forEach((_: string, i: number) => {
+      this.selectedLogsMap[`${groupIndex}-${ruleIndex}-${i}`] = isChecked;
     });
+  
     this.updateSelectedLogs(groupIndex);
   }
-
+  
   updateSelectedLogs(groupIndex: number): void {
-    const logs = this.data.logs[groupIndex].msg;
-    this.selectedLogs = logs.filter((_: string, i: number) => this.selectedLogsMap[groupIndex + '-' + i]);
+    this.selectedLogs = [];
+  
+    this.data.logs[groupIndex].rules.forEach((rule:any, ruleIndex:any) => {
+      rule.msg.forEach((msg: string, i: number) => {
+        if (this.selectedLogsMap[`${groupIndex}-${ruleIndex}-${i}`]) {
+          this.selectedLogs.push(msg);
+        }
+      });
+    });
   }
+  
 
   analyzeSelected(groupIndex: number, ip: string, analysisQuery:string,user_input=''): void {
     this.ipAddress = ip;

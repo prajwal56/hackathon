@@ -23,6 +23,10 @@ class RuleEngine:
         )
         self.ai_engine = AIEngine()
         self.interval = int(os.getenv("RULE_ENGINE_INTERVAL", 60))
+        self.client = MongoClient(os.getenv("MONGO_URL"))
+        self.db = self.client[os.getenv("MONGO_DB")]
+            # Directly access the collection
+        self.collection = self.db["rules"]
 
     # def load_rules(self):
     #     rules = []
@@ -36,14 +40,11 @@ class RuleEngine:
     def run(self):
         now = datetime.utcnow()
         # rules = self.load_rules()
-        client = MongoClient(os.getenv("MONGO_URL"))
-        db = client[os.getenv("MONGO_DB")]
-            # Directly access the collection
-        collection = db["rules"]
         query = {
             "is_deleted": False,
+            "is_active": True,
         }
-        rules = list(collection.find(query))
+        rules = list(self.collection.find(query))
         # rules = [ru.get("condition",{}) for ru in rule]
         for rule in rules:
             print(f"\n🔍 Evaluating rule: {rule.get('name','')}")
@@ -51,26 +52,21 @@ class RuleEngine:
             self.evaluate_rule(rule, start_time, now)
 
     def evaluate_rule(self, rule, start_time, end_time):
-        rule['condition']["query"]['bool']['filter'] = {
-            "range": {
-                "@timestamp": {
-                    "gte": start_time.isoformat(),
-                    "lte": end_time.isoformat()
-                }
-            }
-        }
-        if isinstance(rule.get("index"), list):
-            rule['index'] = [i + "*" for i in rule.get("index", "*")]
-        elif rule.get("index") != "*" and not isinstance(rule.get("index"), list):
-            rule['index'] = [rule.get("index", "*")+"*"]
-        else:
-            rule['index'] = "*"
-        # rule['index'] = [i + "*" for i in rule.get("index", "*")]
-        query = rule.get("condition", {}).get("query", {})
-
-        response = self.es.search(index=rule.get("index", "*"), query=query, size=10)
-        hits = response.get("hits", {}).get("hits", [])
+        hits = self.generate_event(rule, start_time, end_time)
         if hits:
+            if rule.get('linked_rules',[]):
+                for linked_rule in rule.get('linked_rules',[]):
+                    query = {
+                        "is_deleted": False,
+                        "rule_id": linked_rule
+                    }
+                    l_rule= self.collection.find_one(query)
+                    if l_rule:
+                        l_hits = self.generate_event(l_rule, start_time, end_time)
+                        if l_hits:
+                            hits.extend(l_hits)
+            # self.generate_alert(rule, hits)
+            # self.generate_rca(rule, hits)
             classify_obj = self.group_messages_by_ip(hits)
             unique_messages = set()
             for hit in hits:
@@ -97,6 +93,38 @@ class RuleEngine:
                 # print("Solution:--------------------", solution)
         else:
             print("✅ No issues detected.")
+            
+    def generate_event(self, rule, start_time, end_time):
+        """
+        Sends a POST request to create an event with provided details.
+        """
+        try:
+            rule['condition']["query"]['bool']['filter'] = {
+                    "range": {
+                        "@timestamp": {
+                            "gte": start_time.isoformat(),
+                            "lte": end_time.isoformat()
+                        }
+                    }
+                }
+            if isinstance(rule.get("index"), list):
+                rule['index'] = [i + "*" for i in rule.get("index", "*")]
+            elif rule.get("index") != "*" and not isinstance(rule.get("index"), list):
+                rule['index'] = [rule.get("index", "*")+"*"]
+            else:
+                rule['index'] = "*"
+            # rule['index'] = [i + "*" for i in rule.get("index", "*")]
+            query = rule.get("condition", {}).get("query", {})
+
+            response = self.es.search(index=rule.get("index", "*"), query=query, size=10)
+            hits = response.get("hits", {}).get("hits", [])
+            if hits:
+                hits[0]['rule_name'] = rule.get("name", "")
+            return hits
+        except Exception as e:
+            print(f"❌ Error calling event API: {e}")
+            return []
+    
             
     def create_event(self, rule, classify_obj, rca, solution):
         """
@@ -132,17 +160,32 @@ class RuleEngine:
         #     message =  hit["_source"].get("message")
         #     if ip:
         #         ip_map[ip].append(message)
-        result = []
+        result_map = {}
+
         for entry in hits:
             source = entry["_source"]
             ip = source.get("host", {}).get("ip", "0.0.0.0")
+            rule_name = entry.get("rule_name", "Unknown Rule")
             messages = source.get("message", [])
             if isinstance(messages, str):
                 messages = [messages]
-            result.append({"ip": ip, "msg": messages})
 
-                # grouped = [{"ip_address": ip, "msg": messages} for ip, messages in ip_map.items()]
-                # return grouped
+            if ip not in result_map:
+                result_map[ip] = {}
+
+            if rule_name not in result_map[ip]:
+                result_map[ip][rule_name] = []
+
+            result_map[ip][rule_name].extend(messages)
+
+        # Convert to desired format
+        result = [
+            {
+                "ip": ip,
+                "rules": [{"rule_name": rule, "msg": msgs} for rule, msgs in rule_map.items()]
+            }
+            for ip, rule_map in result_map.items()
+        ]
         return result
 
 
