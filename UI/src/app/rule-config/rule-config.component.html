@@ -296,7 +296,7 @@
 
 
     <!-- Business Service Data Card -->
-    <div class="form-card">
+    <!-- <div class="form-card">
       <div class="card-header">
         <h3 class="card-title">Business Service Configuration</h3>
         <p class="card-subtitle">Configure the business services and rules</p>
@@ -318,7 +318,6 @@
             ></ng-select>
           </div>
 
-          <!-- Service Rules -->
           <div class="service-rules">
             <div
               *ngFor="let rules of ruleFormModel.business_service_details.service_rules; let i = index"
@@ -368,7 +367,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- Alert Configuration Card -->
     <div class="form-card">
@@ -422,8 +421,41 @@
       </div>
     </div>
 
-    <!-- SSH Commands Card -->
     <div class="form-card">
+      <div class="card-header">
+        <h3 class="card-title">
+          <span class="title-icon">🔗</span>
+          Rule Linking
+        </h3>
+        <p class="card-subtitle">Link this rule with other existing rules</p>
+      </div>
+      <div class="card-content">
+        <div class="rule-linking-config">
+          <!-- Multi-select Rule Linking -->
+          <div class="form-group">
+            <label class="form-label">
+              <span class="label-icon">🔗</span>
+              Linked Rules
+            </label>
+            <ng-select
+              class="custom-select multi-select"
+              [items]="rule_list"
+              bindLabel="value"
+              bindValue="key"
+              [multiple]="true"
+              [(ngModel)]="ruleFormModel.linked_rules"
+              name="linkedRules"
+              placeholder="Select rules to link"
+              [clearable]="true"
+              appendTo="body"
+            ></ng-select>
+            <small class="form-hint">Select multiple rules to link with this rule</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- SSH Commands Card -->
+    <!-- <div class="form-card">
       <div class="card-header">
         <h3 class="card-title">
           <span class="title-icon">🔐</span>
@@ -470,7 +502,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- Form Actions -->
     <div class="form-actions">

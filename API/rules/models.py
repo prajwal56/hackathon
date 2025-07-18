@@ -17,3 +17,6 @@ class Rules(Document):
     is_deleted = BooleanField(default=False)
     duration = IntField()
     ssh_commands = ListField(StringField())
+    linked_rules = ListField(StringField())
+    is_active = BooleanField(default=False)
+    

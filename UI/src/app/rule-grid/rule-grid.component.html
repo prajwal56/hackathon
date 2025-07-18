@@ -47,6 +47,15 @@
           <button mat-icon-button color="warn" (click)="deleteRule(row)">
             <mat-icon>delete</mat-icon>
           </button>
+          <button 
+            mat-icon-button 
+            [color]="row.is_active ? 'accent' : 'warn'" 
+            (click)="toggleRuleStatus(row)"
+            [title]="row.is_active ? 'Disable Rule' : 'Enable Rule'"
+          >
+            <mat-icon>{{ row.is_active ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+          </button>
+          
         </td>
       </ng-container>
 

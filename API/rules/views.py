@@ -88,6 +88,28 @@ class RulesViewSet(viewsets.ViewSet):
         except Exception as e:
             status_code = status.HTTP_404_NOT_FOUND if "not found" in str(e).lower() else status.HTTP_400_BAD_REQUEST
             return Response({"error": str(e)}, status=status_code)
+        
+        
+    @action(detail=False, methods=['put'], url_path='update_status/(?P<pk>[^/.]+)')
+    def update_rule_status(self, request, pk=None):
+        """
+        PUT /api/rules/update_status/<pk>/
+
+        Update an existing rule using its primary key.
+        """
+        try:
+            updated_data = RulesController.update_rule_status(self, request, pk, request.data)
+            return Response(updated_data, status=status.HTTP_200_OK)
+
+        except ObjectDoesNotExist:
+            return Response({"error": "Rule not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        except ValidationError as ve:
+            return Response({"error": str(ve)}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            status_code = status.HTTP_404_NOT_FOUND if "not found" in str(e).lower() else status.HTTP_400_BAD_REQUEST
+            return Response({"error": str(e)}, status=status_code)
 
         
         

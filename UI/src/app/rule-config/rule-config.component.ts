@@ -46,12 +46,14 @@ export class RuleConfigComponent implements OnInit {
     alert: {
       severity: null,
       type: ''
-    }
+    },
+    linked_rules: []
   };
 
   ruleId: string | null = null;
   isLoading = false;
   indexOptions = [];
+  availableRules = [];
   fieldOptions = [];
   operatorOptions = ['is', 'is not', 'is one of', 'is not one of', 'exists', 'does not exist', 'contains'];
   severityOptions = ["CRITICAL", "MAJOR", "MINOR", "WARNING"];
@@ -199,9 +201,9 @@ export class RuleConfigComponent implements OnInit {
         severity: this.ruleFormModel.alert.severity,
       },
       ssh_commands: this.ruleFormModel.ssh_commands.filter((cmd: string) => cmd.trim() !== ''),
-      business_service_details: this.ruleFormModel.business_service_details
+      business_service_details: this.ruleFormModel.business_service_details,
+      linked_rules : this.ruleFormModel.linked_rules
     };
-    debugger;
     if (!this.ruleFormModel.name || !this.ruleFormModel.index || !this.ruleFormModel.alert.severity) {
       this.snackBar.open('Please fill all required fields.', 'Close', { duration: 3000 });
       return;
@@ -254,6 +256,7 @@ export class RuleConfigComponent implements OnInit {
     this.ruleFormModel.name = rule.name || '';
     this.ruleFormModel.index = rule.index || '';
     this.ruleFormModel.description = rule.description || '';
+    this.ruleFormModel.linked_rules = rule.linked_rules || [];
     this.ruleFormModel.alert = {
       severity: rule.alert?.severity || '',
       type: rule.alert?.type || ''
@@ -409,5 +412,39 @@ export class RuleConfigComponent implements OnInit {
   trackByIndex(index: number, obj: any): any {
   return index;
 }
+
+// Add linked rule function
+addLinkedRule(): void {
+  // Add an empty string to the linkedRules array
+  this.ruleFormModel.linkedRules.push('');
+}
+
+// Remove linked rule function
+removeLinkedRule(index: number): void {
+  // Check if the index is valid and array has items
+  if (index >= 0 && index < this.ruleFormModel.linkedRules.length) {
+    this.ruleFormModel.linkedRules.splice(index, 1);
+  }
+}
+
+// Optional: Clear all linked rules
+clearAllLinkedRules(): void {
+  this.ruleFormModel.linkedRules = [];
+}
+
+// Optional: Check if a rule is already linked (to prevent duplicates)
+isRuleAlreadyLinked(ruleId: string): boolean {
+  return this.ruleFormModel.linkedRules.includes(ruleId);
+}
+
+// Optional: Get linked rule names for display
+// getLinkedRuleNames(): string[] {
+//   return this.ruleFormModel.linkedRules
+//     .map(ruleId => {
+//       const rule = this.availableRules.find(r => r.rule_id === ruleId);
+//       return rule ? rule.name : 'Unknown Rule';
+//     })
+//     .filter(name => name !== 'Unknown Rule');
+// }
 
 }

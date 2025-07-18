@@ -83,6 +83,7 @@ class RulesController:
             business_service_details = data.get("business_service_details",{})
             duration = data.get("duration",0)
             ssh_commands = data.get("ssh_commands",[])
+            linked_rules = data.get("linked_rules",[])
             # Optional: Basic manual validation
             if not name or not index:
                 raise ValidationError("Missing required fields: 'name' or 'index'.")
@@ -98,7 +99,8 @@ class RulesController:
                 alert=alert,
                 is_deleted=False,
                 duration=duration,
-                ssh_commands=ssh_commands
+                ssh_commands=ssh_commands,
+                linked_rules = linked_rules
             )
             rule={
                 "id": rule.id,
@@ -136,6 +138,7 @@ class RulesController:
             rule.business_service_details = data.get("business_service_details",{})
             rule.duration = data.get("duration",0)
             rule.ssh_commands = data.get("ssh_commands",[])
+            rule.linked_rules = data.get("linked_rules",[])
             rule.save()
             rule={
                 "id": rule.id,
@@ -415,3 +418,25 @@ class RulesController:
 
     def get_ID(self):
         return str(uuid.uuid4().int % (10**20))  # 
+    
+    
+    def update_rule_status(self, request, pk, data):
+        """
+        Update an existing rule.
+        """
+        try:
+            rule = Rules.objects.get(rule_id=pk)
+        except Rules.DoesNotExist:
+            raise NotFound("Rule not found")
+
+        try:
+            rule.is_active = data
+            rule.save()  
+            return {
+                "message": "Rule updated successfully",
+                "status": "success",
+            }
+        except ValidationError as e:
+            raise e
+        except Exception as e:
+            raise ValidationError(f"Failed to update rule: {str(e)}")

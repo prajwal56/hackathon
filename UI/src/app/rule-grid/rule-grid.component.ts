@@ -99,4 +99,26 @@ export class RuleGridComponent implements OnInit, AfterViewInit {
   getStatusClass(desc: string): string {
     return desc.toLowerCase().replace(/\s+/g, '-');
   }
+  toggleRuleStatus(row: any): void {
+    const newStatus = !row.is_active;
+    const action = newStatus ? 'enable' : 'disable';
+    
+    // Call your service to update the rule status
+    this.ruleService.updateRuleStatus(row.rule_id, newStatus).subscribe({
+      next: (response) => {
+        // Update the local data
+        row.is_active = newStatus;
+        console.log(`Rule ${action}d successfully`);
+        
+        // Optional: Show success message
+        // this.snackBar.open(`Rule ${action}d successfully`, 'Close', { duration: 3000 });
+      },
+      error: (error: any) => {
+        console.error(`Error ${action}ing rule:`, error);
+        
+        // Optional: Show error message
+        // this.snackBar.open(`Failed to ${action} rule`, 'Close', { duration: 3000 });
+      }
+    });
+  }
 }
