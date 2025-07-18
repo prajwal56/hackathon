@@ -8,21 +8,23 @@ import { EventService } from './../services/event.service';
   templateUrl: './event-viewer.component.html',
   styleUrls: ['./event-viewer.component.scss']
 })
+
+
 export class EventViewerComponent {
   selectedLogsMap: { [key: string]: boolean } = {};
   selectedLogs: string[] = [];
-  parsedAnalysis = 
+  parsedAnalysis =
     {
       rca: '',
       solution: '',
       commands: '',
       user_input: '',
     };
-  
+
   showAnalysis = false;
   loading = false;
   analysisText = '';
-  analysisQuery: string = ''; 
+  analysisQuery: string = '';
   customInputs = [{ text: '', selected: false }];
   selectedCommands: string[] = [];
   executionOutput = '';
@@ -42,10 +44,10 @@ export class EventViewerComponent {
   close(): void {
     this.dialogRef.close();
   }
-  
+
 
   isAllSelected(groupIndex: number): boolean {
-    console.log("this.data--------------------",this.data)
+    // console.log("this.data--------------------",this.data)
     const logs = this.data.logs[groupIndex].msg;
     return logs.every((_: string, i: number) => this.selectedLogsMap[groupIndex + '-' + i]);
   }
@@ -75,11 +77,12 @@ export class EventViewerComponent {
     };
     this.event_service.get_event_rca(payload).subscribe(
       (res: any) => {
+        // console.log("res>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",res)
         this.analysisText = res;
         this.parsedAnalysis = {
           rca: res.rca,
           solution: res.solution,
-          commands: res.commands,
+          commands: res.commands || '',
           user_input: res?.user_input,
         };
         this.parseAndAddCommandsToCustomInputs(res.commands);
@@ -94,20 +97,20 @@ export class EventViewerComponent {
 
   parseAndAddCommandsToCustomInputs(commands: string): void {
     if (!commands) return;
-  
+
     // Remove any existing empty entries
     this.customInputs = this.customInputs.filter(cmd => cmd.text.trim().length > 0);
-  
+
     const commandLines = commands
       .split(/[\r\n]+/)
       .map(cmd => cmd.trim())
       .filter(cmd => cmd.length > 0); // ensures no empty or whitespace-only commands
-  
+
     commandLines.forEach(command => {
       if (!command.startsWith('#')) {
         this.customInputs.push({ text: command, selected: false });
       }
-      
+
     });
   }
 
@@ -176,7 +179,7 @@ export class EventViewerComponent {
 
     try {
       const response = await this.event_service.executeCustomCommands(payload).toPromise();
-      this.executionOutput = response.output || '✅ Execution completed.';
+      this.executionOutput = response || '✅ Execution completed.';
     } catch (error: any) {
       this.executionOutput = '❌ Error: ' + (error?.message || 'Unknown error');
     } finally {

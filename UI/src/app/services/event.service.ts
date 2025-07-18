@@ -5,6 +5,8 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
+
+
 export class EventService {
   private baseUrl = 'http://10.0.6.222:9090/event'; // Match your Django viewset route
 
@@ -33,3 +35,4 @@ export class EventService {
     return this.http.post(`${this.baseUrl}/generate_event/`, payload);
   }
 }
+

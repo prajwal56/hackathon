@@ -11,6 +11,8 @@ class SSHInterface:
 
     def run_ssh_command(self, host, user, password, commands):
         try:
+            import html  # for escaping special HTML characters
+
             client = paramiko.SSHClient()
             client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             client.connect(hostname=host, username=user, password=password)
@@ -20,9 +22,12 @@ class SSHInterface:
                 if not command.strip():
                     continue
                 stdin, stdout, stderr = client.exec_command(command)
-                full_output += f"$ {command}\n{stdout.read().decode()}{stderr.read().decode()}\n"
+                command_html = f'<span class="ssh-command">$ {html.escape(command)}</span>'
+                stdout_html = f'<span class="ssh-stdout">{html.escape(stdout.read().decode())}</span>'
+                stderr_html = f'<span class="ssh-stderr">{html.escape(stderr.read().decode())}</span>'
+                full_output += f"{command_html}<br>{stdout_html}{stderr_html}<br>"
 
-            client.close()
-            return full_output
+            return f'<div class="ssh-terminal">{full_output}</div>'
         except Exception as e:
-            return f"❌ SSH Error: {e}"
+            return f'<div class="ssh-error">❌ SSH Error: {html.escape(str(e))}</div>'
+

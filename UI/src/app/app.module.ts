@@ -42,6 +42,7 @@ import { GridsterModule } from 'angular-gridster2';
 import { EventChartComponent } from './widgets/event-chart/event-chart.component';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { RuleDonutComponent } from './widgets/rule-donut/rule-donut.component';
+import { SafeHtmlPipe } from './safe-html.pipe';
 @NgModule({
   declarations: [
     AppComponent,
@@ -56,6 +57,7 @@ import { RuleDonutComponent } from './widgets/rule-donut/rule-donut.component';
     EventChartComponent,
     RuleDonutComponent,
     EventGenerateComponent,
+    SafeHtmlPipe
   ],
   imports: [
     BrowserModule,

@@ -1,7 +1,9 @@
 <!-- Updated eventviewer-component.html -->
 <div class="event-viewer-container d-flex flex-column h-100">
   <!-- Professional Header -->
-  <div class="event-header d-flex justify-content-between align-items-center px-3 py-2 border-bottom bg-white shadow-sm sticky-top">
+  <div
+    class="event-header d-flex justify-content-between align-items-center px-3 py-2 border-bottom bg-white shadow-sm sticky-top"
+  >
     <div class="header-title d-flex align-items-center">
       <div class="header-icon-wrapper me-3">
         <i class="bi bi-eye-fill"></i>
@@ -18,7 +20,6 @@
 
   <!-- Main Content -->
   <div class="main-content p-4 overflow-auto flex-grow-1">
-    
     <!-- Event Metadata -->
     <div class="metadata-section mb-3">
       <div class="professional-card">
@@ -46,19 +47,31 @@
               <div class="info-item">
                 <label class="info-label">Severity</label>
                 <div class="info-value">
-                  <span class="severity-badge severity-critical text-dark" *ngIf="data.severity === 'CRITICAL'">
+                  <span
+                    class="severity-badge severity-critical text-dark"
+                    *ngIf="data.severity === 'CRITICAL'"
+                  >
                     <i class="bi bi-exclamation-triangle-fill me-1"></i>
                     {{ data.severity }}
                   </span>
-                  <span class="severity-badge severity-warning text-dark" *ngIf="data.severity === 'WARNING'">
+                  <span
+                    class="severity-badge severity-warning text-dark"
+                    *ngIf="data.severity === 'WARNING'"
+                  >
                     <i class="bi bi-exclamation-triangle me-1"></i>
                     {{ data.severity }}
                   </span>
-                  <span class="severity-badge severity-major text-dark" *ngIf="data.severity === 'MAJOR'">
+                  <span
+                    class="severity-badge severity-major text-dark"
+                    *ngIf="data.severity === 'MAJOR'"
+                  >
                     <i class="bi bi-exclamation-circle me-1"></i>
                     {{ data.severity }}
                   </span>
-                  <span class="severity-badge severity-minor text-dark" *ngIf="data.severity === 'MINOR'">
+                  <span
+                    class="severity-badge severity-minor text-dark"
+                    *ngIf="data.severity === 'MINOR'"
+                  >
                     <i class="bi bi-info-circle me-1"></i>
                     {{ data.severity }}
                   </span>
@@ -71,29 +84,40 @@
     </div>
 
     <!-- Logs & Analysis per IP -->
-    <div *ngFor="let item of data.logs; let j = index" class="host-section mb-4">
-      
+    <div
+      *ngFor="let item of data.logs; let j = index"
+      class="host-section mb-4"
+    >
       <!-- Host Header -->
       <div class="host-header-card professional-card mb-3">
-        <div class="host-header-content d-flex justify-content-between align-items-center p-3">
+        <div
+          class="host-header-content d-flex justify-content-between align-items-center p-3"
+        >
           <div class="host-info d-flex align-items-center">
             <div class="host-icon-wrapper me-3">
               <i class="bi bi-hdd-network"></i>
             </div>
             <div>
-              <h5 class="mb-0 fw-bold">{{ item.ip || 'Host ' + (j + 1) }}</h5>
+              <h5 class="mb-0 fw-bold">{{ item.ip || "Host " + (j + 1) }}</h5>
               <small class="text-muted">Remote Server</small>
             </div>
           </div>
           <div class="host-stats">
-            <span class="badge bg-primary rounded-pill">{{ item.msg?.length || 0 }} logs</span>
+            <span class="badge bg-primary rounded-pill"
+              >{{ item.msg?.length || 0 }} logs</span
+            >
           </div>
         </div>
       </div>
 
       <!-- Logs Section -->
-      <div class="logs-section border rounded mb-4 d-flex flex-column" style="height: 400px">
-        <div class="logs-header d-flex justify-content-between align-items-center bg-light border-bottom px-3 py-2">
+      <div
+        class="logs-section border rounded mb-4 d-flex flex-column"
+        style="height: 400px"
+      >
+        <div
+          class="logs-header d-flex justify-content-between align-items-center bg-light border-bottom px-3 py-2"
+        >
           <div class="d-flex align-items-center">
             <input
               type="checkbox"
@@ -125,7 +149,10 @@
           </table>
         </div>
         <div class="p-2 border-top bg-light" *ngIf="!parsedAnalysis.user_input">
-          <button class="btn btn-outline-primary" (click)="analyzeSelected(j, item.ip_address,analysisQuery)">
+          <button
+            class="btn btn-outline-primary"
+            (click)="analyzeSelected(j, item.ip_address, analysisQuery)"
+          >
             <i class="bi bi-search me-2"></i>
             Analyze
           </button>
@@ -153,7 +180,9 @@
             </div>
 
             <div class="analysis-item mb-4">
-              <h5 class="card-title text-success d-flex align-items-center mt-4">
+              <h5
+                class="card-title text-success d-flex align-items-center mt-4"
+              >
                 <i class="bi bi-tools me-2"></i>
                 🛠 Solution
               </h5>
@@ -165,7 +194,9 @@
             </div>
 
             <div class="analysis-item" *ngIf="!parsedAnalysis.user_input">
-              <h5 class="card-title text-success d-flex align-items-center mt-4">
+              <h5
+                class="card-title text-success d-flex align-items-center mt-4"
+              >
                 <i class="bi bi-terminal me-2"></i>
                 🚀 Commands
               </h5>
@@ -176,7 +207,9 @@
               </div>
             </div>
             <div class="analysis-item" *ngIf="parsedAnalysis.user_input">
-              <h5 class="card-title text-success d-flex align-items-center mt-4">
+              <h5
+                class="card-title text-success d-flex align-items-center mt-4"
+              >
                 <i class="bi bi-terminal me-2"></i>
                 🚀 User Input
               </h5>
@@ -186,24 +219,41 @@
                 </p>
               </div>
             </div>
-            <div class="analysis-input-section mb-3" *ngIf="parsedAnalysis.user_input">
+            <div
+              class="analysis-input-section mb-3"
+              *ngIf="parsedAnalysis.user_input"
+            >
               <label class="form-label fw-semibold text-muted">
                 <i class="bi bi-chat-dots me-1"></i>
                 Analysis Query (Optional)
               </label>
-              <textarea 
-                class="form-control analysis-textarea" 
+              <textarea
+                class="form-control analysis-textarea"
                 [(ngModel)]="analysisQuery"
                 placeholder="Enter specific questions or focus areas for analysis (e.g., 'Focus on memory issues', 'Check for security vulnerabilities', etc.)"
-                rows="2">
+                rows="2"
+              >
               </textarea>
               <small class="form-text text-muted">
                 <i class="bi bi-info-circle me-1"></i>
                 Provide additional context to guide the AI analysis
               </small>
             </div>
-            <div class="p-2 border-top bg-light" *ngIf="parsedAnalysis.user_input">
-              <button class="btn btn-outline-primary" (click)="analyzeSelected(j, item.ip_address,analysisQuery,parsedAnalysis.user_input)">
+            <div
+              class="p-2 border-top bg-light"
+              *ngIf="parsedAnalysis.user_input"
+            >
+              <button
+                class="btn btn-outline-primary"
+                (click)="
+                  analyzeSelected(
+                    j,
+                    item.ip_address,
+                    analysisQuery,
+                    parsedAnalysis.user_input
+                  )
+                "
+              >
                 <i class="bi bi-search me-2"></i>
                 Analyze
               </button>
@@ -226,14 +276,24 @@
               <i class="bi bi-pc-display me-1"></i>
               IP Address
             </label>
-            <input type="text" [(ngModel)]="ipAddress" class="form-control" placeholder="e.g. 192.168.1.10" />
+            <input
+              type="text"
+              [(ngModel)]="ipAddress"
+              class="form-control"
+              placeholder="e.g. 192.168.1.10"
+            />
           </div>
           <div class="col-md-4">
             <label class="form-label fw-semibold">
               <i class="bi bi-person me-1"></i>
               Username
             </label>
-            <input type="text" [(ngModel)]="username" class="form-control" placeholder="e.g. admin" />
+            <input
+              type="text"
+              [(ngModel)]="username"
+              class="form-control"
+              placeholder="e.g. admin"
+            />
           </div>
           <div class="col-md-4">
             <label class="form-label fw-semibold">
@@ -241,9 +301,20 @@
               Password
             </label>
             <div class="input-group">
-              <input [type]="showPassword ? 'text' : 'password'" class="form-control" [(ngModel)]="password" />
-              <button class="btn btn-outline-secondary" type="button" (click)="togglePasswordVisibility()">
-                <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                class="form-control"
+                [(ngModel)]="password"
+              />
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                (click)="togglePasswordVisibility()"
+              >
+                <i
+                  class="bi"
+                  [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"
+                ></i>
               </button>
             </div>
           </div>
@@ -260,19 +331,40 @@
                 <h6 class="mb-0 fw-bold">📥 Custom Commands</h6>
               </div>
               <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="selectAllCmd" [checked]="areAllCommandsSelected()" (change)="toggleSelectAllCommands($event)" />
-                <label class="form-check-label" for="selectAllCmd">Select All</label>
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="selectAllCmd"
+                  [checked]="areAllCommandsSelected()"
+                  (change)="toggleSelectAllCommands($event)"
+                />
+                <label class="form-check-label" for="selectAllCmd"
+                  >Select All</label
+                >
               </div>
             </div>
           </div>
-          
+
           <div class="card-body">
             <div class="commands-list">
-              <div *ngFor="let cmd of customInputs; let i = index" class="input-group mb-2">
+              <div
+                *ngFor="let cmd of customInputs; let i = index"
+                class="input-group mb-2"
+              >
                 <div class="input-group-text">
-                  <input type="checkbox" [(ngModel)]="cmd.selected" (change)="updateSelectedCommands()" class="form-check-input" />
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="cmd.selected"
+                    (change)="updateSelectedCommands()"
+                    class="form-check-input"
+                  />
                 </div>
-                <input [(ngModel)]="cmd.text" type="text" class="form-control" placeholder="Enter command..." />
+                <input
+                  [(ngModel)]="cmd.text"
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter command..."
+                />
                 <button class="btn btn-outline-danger" (click)="removeInput(i)">
                   <mat-icon>delete</mat-icon>
                 </button>
@@ -280,12 +372,19 @@
             </div>
 
             <div class="d-flex justify-content-between align-items-center mt-3">
-              <button class="btn btn-sm btn-outline-secondary" (click)="addInput()">
+              <button
+                class="btn btn-sm btn-outline-secondary"
+                (click)="addInput()"
+              >
                 <i class="bi bi-plus-circle me-2"></i>
                 ➕ Add Command
               </button>
-              
-              <button class="btn btn-primary" (click)="executeCommands()" [disabled]="!parsedAnalysis?.commands">
+
+              <button
+                class="btn btn-primary"
+                (click)="executeCommands()"
+                [disabled]="!parsedAnalysis?.commands"
+              >
                 <mat-icon class="me-2">update</mat-icon>
                 Update Solution with Commands
               </button>
@@ -309,12 +408,14 @@
             </h6>
           </div>
           <div class="card-body p-0">
-            <pre class="bg-dark text-light p-3 m-0 rounded-bottom" style="max-height: 300px; overflow-y: auto">{{ executionOutput }}</pre>
+            <pre
+              class="bg-dark p-3 m-0 rounded-bottom terminal-output"
+              style="max-height: 300px; overflow-y: auto"
+              [innerHTML]="executionOutput | safeHtml"
+            ></pre>
           </div>
         </div>
       </div>
-
     </div>
-
   </div>
 </div>

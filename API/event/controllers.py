@@ -55,7 +55,7 @@ class EventController:
         Retrieves a list of all Event documents.
         """ 
         data = request.data
-        RCA_data = EventController.ai_engine.generate_prompt(str(data))
+        RCA_data = EventController.ai_engine.analyze_error(str(data))
         return RCA_data
     
     
