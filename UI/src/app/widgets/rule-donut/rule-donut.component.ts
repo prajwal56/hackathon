@@ -59,14 +59,14 @@ export class RuleDonutComponent implements OnChanges {
         formatter: (params: any) => {
           const percentage = ((params.value / this.getTotalRules()) * 100).toFixed(1);
           return `
-            <div style="padding: 8px 12px; background: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-              <div style="font-weight: 600; color: #1f2937; margin-bottom: 4px;">${params.name}</div>
-              <div style="color: #6b7280; font-size: 14px;">
-                <span style="display: inline-block; width: 8px; height: 8px; background: ${params.color}; border-radius: 50%; margin-right: 6px;"></span>
-                ${params.value} rules (${percentage}%)
-              </div>
+          <div style="padding: 8px 12px; background: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+            <div style="font-weight: 600; color: #1f2937; margin-bottom: 4px;">${params.name}</div>
+            <div style="color: #6b7280; font-size: 14px;">
+              <span style="display: inline-block; width: 8px; height: 8px; background: ${params.color}; border-radius: 50%; margin-right: 6px;"></span>
+              ${params.value} rules (${percentage}%)
             </div>
-          `;
+          </div>
+        `;
         },
         backgroundColor: 'transparent',
         borderWidth: 0,
@@ -77,12 +77,20 @@ export class RuleDonutComponent implements OnChanges {
       legend: {
         show: false
       },
+      // IMPORTANT: Add grid to ensure proper centering
+      grid: {
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        containLabel: false
+      },
       series: [
         {
           name: 'Rules',
           type: 'pie',
           radius: ['55%', '85%'],
-          center: ['50%', '50%'],
+          center: ['50%', '50%'], // This ensures the donut is centered
           avoidLabelOverlap: false,
           label: {
             show: false
@@ -111,6 +119,7 @@ export class RuleDonutComponent implements OnChanges {
       ]
     };
   }
+
 
   // Helper methods
   getTotalRules(): number {

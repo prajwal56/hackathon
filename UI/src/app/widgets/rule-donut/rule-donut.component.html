@@ -45,13 +45,16 @@
         <!-- Chart with Data -->
         <div *ngIf="!isLoading && rulesData && rulesData.length > 0" class="chart-wrapper">
           <div class="chart-section">
-            <div echarts [options]="chartOptions" class="donut-chart"></div>
+            <!-- Chart Container with Perfect Centering -->
+            <div class="chart-container-wrapper">
+              <div echarts [options]="chartOptions" class="donut-chart"></div>
 
-            <!-- Center Statistics -->
-            <div class="chart-center-stats">
-              <div class="center-metric">
-                <span class="metric-value">{{ getTotalRules() }}</span>
-                <span class="metric-label">Total Rules</span>
+              <!-- Center Statistics - Perfectly Positioned -->
+              <div class="chart-center-stats">
+                <div class="center-metric">
+                  <span class="metric-value">{{ getTotalRules() }}</span>
+                  <span class="metric-label">Total Rules</span>
+                </div>
               </div>
             </div>
           </div>
@@ -250,18 +253,6 @@
             </div>
           </div>
         </div>
-      </div>
-
-      <!-- Sidebar Footer -->
-      <div class="sidebar-footer">
-        <button class="sidebar-btn secondary" (click)="closeSidebar()">
-          <span class="btn-icon">👈</span>
-          <span class="btn-text">Close</span>
-        </button>
-        <button class="sidebar-btn primary">
-          <span class="btn-icon">🔧</span>
-          <span class="btn-text">Take Action</span>
-        </button>
       </div>
     </div>
   </div>

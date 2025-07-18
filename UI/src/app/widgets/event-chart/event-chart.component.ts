@@ -95,11 +95,11 @@ export class EventChartComponent implements OnInit, OnChanges {
         }),
         lineStyle: {
           color: this.getColor(severity),
-          width: 3
+          width: 2
         },
         itemStyle: {
           color: this.getColor(severity),
-          borderWidth: 2,
+          borderWidth: 1,
           borderColor: '#fff'
         },
         areaStyle: this.chartViewMode === 'area' ? {
@@ -115,25 +115,25 @@ export class EventChartComponent implements OnInit, OnChanges {
         backgroundColor: '#fff',
         borderColor: '#e2e8f0',
         borderWidth: 1,
-        borderRadius: 8,
-        padding: 12,
+        borderRadius: 6,
+        padding: 8,
         textStyle: {
           color: '#1f2937',
-          fontSize: 14
+          fontSize: 12
         },
         formatter: (params: any) => {
           const d = params.data;
           return `
-            <div style="font-weight: 600; color: ${this.getColor(d.severity)}; margin-bottom: 8px;">
+            <div style="font-weight: 600; color: ${this.getColor(d.severity)}; margin-bottom: 6px;">
               ${d.severity.toUpperCase()}
             </div>
-            <div style="margin-bottom: 4px;">
+            <div style="margin-bottom: 3px;">
               <span style="color: #6b7280;">Time:</span> ${new Date(d.timestamp).toLocaleString()}
             </div>
-            <div style="margin-bottom: 4px;">
+            <div style="margin-bottom: 3px;">
               <span style="color: #6b7280;">Count:</span> <strong>${d.value}</strong>
             </div>
-            <div style="font-size: 12px; color: #9ca3af; margin-top: 8px;">
+            <div style="font-size: 10px; color: #9ca3af; margin-top: 6px;">
               Click to view details
             </div>
           `;
@@ -141,19 +141,19 @@ export class EventChartComponent implements OnInit, OnChanges {
       },
       legend: {
         data: Object.keys(grouped),
-        top: 20,
-        itemWidth: 14,
-        itemHeight: 14,
+        top: 10,
+        itemWidth: 12,
+        itemHeight: 12,
         textStyle: {
           color: '#374151',
-          fontSize: 13
+          fontSize: 11
         }
       },
       grid: {
         left: '3%',
         right: '4%',
         bottom: '8%',
-        top: '15%',
+        top: '12%',
         containLabel: true
       },
       xAxis: {
@@ -172,7 +172,7 @@ export class EventChartComponent implements OnInit, OnChanges {
         },
         axisLabel: {
           color: '#6b7280',
-          fontSize: 12
+          fontSize: 10
         }
       },
       yAxis: {
@@ -180,7 +180,7 @@ export class EventChartComponent implements OnInit, OnChanges {
         name: 'Event Count',
         nameTextStyle: {
           color: '#6b7280',
-          fontSize: 12
+          fontSize: 10
         },
         axisLine: {
           lineStyle: {
@@ -194,7 +194,7 @@ export class EventChartComponent implements OnInit, OnChanges {
         },
         axisLabel: {
           color: '#6b7280',
-          fontSize: 12
+          fontSize: 10
         },
         splitLine: {
           lineStyle: {
@@ -250,7 +250,6 @@ export class EventChartComponent implements OnInit, OnChanges {
   }
 
   exportData(): void {
-    // Export functionality
     console.log('Exporting event data...');
   }
 

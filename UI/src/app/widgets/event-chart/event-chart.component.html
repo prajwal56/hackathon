@@ -2,15 +2,15 @@
   <!-- Main Chart Widget -->
   <div class="chart-widget" [class.sidebar-open]="isSidebarOpen">
 
-    <!-- Widget Header -->
+    <!-- Compact Widget Header -->
     <div class="widget-header">
       <div class="header-content">
         <div class="widget-title">
           <span class="title-icon">📈</span>
-          <h3>Event Trend Analysis</h3>
+          <h3>Event Trends</h3>
         </div>
         <div class="widget-subtitle">
-          <span class="subtitle-text">Real-time monitoring of system events</span>
+          <span class="subtitle-text">Real-time event monitoring</span>
         </div>
       </div>
 
@@ -54,13 +54,13 @@
       </div>
     </div>
 
-    <!-- Summary Stats -->
+    <!-- Compact Summary Stats -->
     <div class="summary-stats">
       <div class="stat-card">
         <div class="stat-icon">📊</div>
         <div class="stat-content">
           <div class="stat-value">{{ totalEvents }}</div>
-          <div class="stat-label">Total Events</div>
+          <div class="stat-label">Total</div>
         </div>
       </div>
 
@@ -68,7 +68,7 @@
         <div class="stat-icon">🚨</div>
         <div class="stat-content">
           <div class="stat-value">{{ criticalEvents }}</div>
-          <div class="stat-label">Critical Events</div>
+          <div class="stat-label">Critical</div>
         </div>
       </div>
 
@@ -76,7 +76,7 @@
         <div class="stat-icon">⚡</div>
         <div class="stat-content">
           <div class="stat-value">{{ averageEventsPerHour }}</div>
-          <div class="stat-label">Events/Hour</div>
+          <div class="stat-label">Per Hour</div>
         </div>
       </div>
 
@@ -89,13 +89,13 @@
       </div>
     </div>
 
-    <!-- Chart Container -->
+    <!-- Compact Chart Container -->
     <div class="chart-section">
       <div class="chart-wrapper">
         <!-- Loading State -->
         <div *ngIf="isLoading" class="loading-overlay">
           <div class="spinner"></div>
-          <p>Loading chart data...</p>
+          <p>Loading...</p>
         </div>
 
         <!-- Chart -->
@@ -108,7 +108,7 @@
       </div>
     </div>
 
-    <!-- Event Summary Table -->
+    <!-- Compact Event Summary Table -->
     <div class="table-section">
       <div class="table-header">
         <h4 class="table-title">
@@ -118,7 +118,6 @@
         <div class="table-actions">
           <button class="table-action-btn">
             <span class="btn-icon">🔍</span>
-            Filter
           </button>
         </div>
       </div>
@@ -128,10 +127,9 @@
           <thead>
             <tr>
               <th>Severity</th>
-              <th>Timestamp</th>
+              <th>Time</th>
               <th>Count</th>
               <th>Code</th>
-              <th>Description</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -156,11 +154,6 @@
               <td>
                 <div class="code-cell">
                   <code class="event-code">{{ event.details?.code || 'N/A' }}</code>
-                </div>
-              </td>
-              <td>
-                <div class="description-cell">
-                  <span class="description-text">{{ event.details?.desc || 'No description' }}</span>
                 </div>
               </td>
               <td>
@@ -211,7 +204,7 @@
             </div>
             <div class="event-meta">
               <div class="meta-item">
-                <span class="meta-label">Timestamp:</span>
+                <span class="meta-label">Time:</span>
                 <span class="meta-value">{{ formatDate(selectedEvent.timestamp) }}</span>
               </div>
               <div class="meta-item">
@@ -225,7 +218,7 @@
           <div class="event-section">
             <h5 class="section-title">
               <span class="section-icon">📋</span>
-              Event Properties
+              Properties
             </h5>
             <div class="properties-grid">
               <div class="property-item">
@@ -237,19 +230,7 @@
               <div class="property-item">
                 <div class="property-label">Description</div>
                 <div class="property-value">
-                  {{ selectedEvent.details?.desc || 'No description available' }}
-                </div>
-              </div>
-              <div class="property-item">
-                <div class="property-label">Source</div>
-                <div class="property-value">
-                  {{ selectedEvent.details?.source || 'Unknown' }}
-                </div>
-              </div>
-              <div class="property-item">
-                <div class="property-label">Category</div>
-                <div class="property-value">
-                  {{ selectedEvent.details?.category || 'Uncategorized' }}
+                  {{ selectedEvent.details?.desc || 'No description' }}
                 </div>
               </div>
             </div>
@@ -259,32 +240,10 @@
           <div class="event-section">
             <h5 class="section-title">
               <span class="section-icon">🔧</span>
-              Raw Event Data
+              Raw Data
             </h5>
             <div class="raw-data-container">
               <pre class="raw-data">{{ selectedEvent | json }}</pre>
-            </div>
-          </div>
-
-          <!-- Actions -->
-          <div class="event-section">
-            <h5 class="section-title">
-              <span class="section-icon">⚡</span>
-              Actions
-            </h5>
-            <div class="action-buttons">
-              <button class="action-btn primary">
-                <span class="btn-icon">🚨</span>
-                Create Alert
-              </button>
-              <button class="action-btn secondary">
-                <span class="btn-icon">📝</span>
-                Add Note
-              </button>
-              <button class="action-btn secondary">
-                <span class="btn-icon">🔍</span>
-                Investigate
-              </button>
             </div>
           </div>
         </div>

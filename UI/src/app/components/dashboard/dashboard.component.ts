@@ -20,8 +20,8 @@ export class DashboardComponent {
     // { cols: 20, rows: 50, y: 0, x: 0, widgetType: 'error-summary' },
     // { cols: 20, rows: 50, y: 1, x: 0, widgetType: 'rule-hits' },
     // { cols: 20, rows: 40, y: 0, x: 1, widgetType: 'event-grid' },
-    { cols: 40, rows: 40, y: 0, x: 0, widgetType: 'event-chart' },
-    { cols: 20, rows: 20, y: 0, x: 0, widgetType: 'rule-donut' },
+    { cols: 50, rows: 50, y: 0, x: 0, widgetType: 'event-chart' },
+    { cols: 50, rows: 50, y: 0, x: 1, widgetType: 'rule-donut' },
   ];
 
 
