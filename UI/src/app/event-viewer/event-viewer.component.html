@@ -324,7 +324,7 @@
     </div>
   </div>
   <!-- Footer with Resolve Button -->
-  <div class="event-footer">
+  <div class="event-footer" *ngIf="executionOutput && !executing">
     <button
       class="btn btn-success resolve-btn"
       (click)="onResolve()"

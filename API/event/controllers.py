@@ -38,7 +38,7 @@ class EventController:
         """
         Retrieves a list of all Event documents with created_at converted to IST and formatted.
         """
-        events = Event.objects.all()
+        events = Event.objects.filter(resolved = False)
         data = EventSerializer(events, many=True).data
 
         for i in data:
