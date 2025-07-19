@@ -20,6 +20,7 @@ export class EventViewerComponent {
       commands: '',
       user_input: '',
     };
+    isCopied = false;
 
   showAnalysis = false;
   loading = false;
@@ -262,4 +263,43 @@ export class EventViewerComponent {
     });
   }
 
+   async copyToClipboard(text: string): Promise<void> {
+    try {
+      // Remove HTML tags for clean clipboard content
+      const cleanText = text.replace(/<[^>]*>/g, '');
+
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(cleanText);
+      } else {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = cleanText;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+
+      this.showCopyFeedback();
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+      // Show error message to user
+      this.showCopyError();
+    }
+  }
+
+  private showCopyFeedback(): void {
+    this.isCopied = true;
+    setTimeout(() => {
+      this.isCopied = false;
+    }, 2000);
+  }
+
+  private showCopyError(): void {
+    // You can add a toast notification or alert here
+    alert('Failed to copy to clipboard');
+  }
 }

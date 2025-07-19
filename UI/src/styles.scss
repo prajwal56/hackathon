@@ -6,3 +6,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .no-padding-dialog .mat-dialog-container {
   padding: 0 !important;
 }
+
+.ng-dropdown-panel .ng-dropdown-panel-items{
+  max-height: none !important;
+}
