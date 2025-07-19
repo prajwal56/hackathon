@@ -214,6 +214,16 @@ class EventController:
             return {"message": "Event marked as resolved."}
         except Event.DoesNotExist:
             return {"error": "Event not found."}
+        
+    
+    def get_success_rate(request):
+        """
+        Calculates the success rate of events.
+        """
+        total_events = Event.objects.count()
+        resolved_events = Event.objects.filter(resolved=True).count()
+        success_rate = (resolved_events / total_events) * 100 if total_events > 0 else 0
+        return {"success_rate": success_rate}
 
 
         

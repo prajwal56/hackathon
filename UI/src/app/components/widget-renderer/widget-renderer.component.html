@@ -8,7 +8,7 @@
     [eventData]="eventSummaryData"
     (eventHovered)="showEventDetail($event)"
   ></app-event-chart>
-  <app-rule-donut *ngSwitchCase="'rule-donut'" [rulesData]="rules"></app-rule-donut>
+  <app-rule-donut *ngSwitchCase="'rule-donut'" [rulesData]="rules" [success_rate]="successRate"></app-rule-donut>
 
   <div *ngSwitchDefault class="p-3 text-center text-muted">
     Unknown widget type: {{ widgetType }}

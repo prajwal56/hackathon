@@ -16,12 +16,13 @@ export class WidgetRendererComponent implements OnInit {
   { name: 'Medium', count: 3 },
   { name: 'Low', count: 1 }
 ];
-
+  public successRate:any = null;
   constructor(private eventService: EventService) {}
 
   ngOnInit(): void {
     this.getEventData();
     this.get_rule_donut_chart_data();
+    this.getSuccessRate();
   }
 
   getEventData(): void {
@@ -43,6 +44,15 @@ export class WidgetRendererComponent implements OnInit {
 
   showEventDetail(event: any): void {
     this.selectedEvent = event.details;
+  }
+
+  getSuccessRate() {
+    this.eventService.get_success_rate().subscribe((count: any) => {
+      console.log(count);
+      this.successRate = +(Math.round(count?.success_rate * 100) / 100).toFixed(2);
+      // const totalCount = this.getTotalRules();
+      // const successRate = ((successCount / totalCount) * 100).toFixed(1);
+    });
   }
 
 }

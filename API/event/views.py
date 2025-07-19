@@ -109,3 +109,14 @@ class EventViewSet(viewsets.ViewSet):
             return Response(data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+    @action(detail=False, methods=['get'], url_path='get_success_rate')
+    def get_success_rate(self, request):
+        """
+        Get success rate for an event.
+        """
+        try:
+            data = EventController.get_success_rate(request)
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

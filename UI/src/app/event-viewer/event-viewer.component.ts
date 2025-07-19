@@ -68,7 +68,6 @@ export class EventViewerComponent {
 
   updateSelectedLogs(groupIndex: number): void {
     this.selectedLogs = [];
-    debugger;
     this.data.logs[groupIndex].rules.forEach((rule: any, ruleIndex: any) => {
       rule.msg.forEach((msg: string, i: number) => {
         if (this.selectedLogsMap[`${groupIndex}-${ruleIndex}-${i}`]) {

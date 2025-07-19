@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-
+import {EventService} from "../../services/event.service"
+import { I } from '@angular/cdk/keycodes';
 @Component({
   selector: 'app-rule-donut',
   templateUrl: './rule-donut.component.html',
@@ -8,7 +9,7 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 export class RuleDonutComponent implements OnChanges {
   @Input() rulesData: any[] = [];
   @Input() isLoading: boolean = false;
-
+  @Input() success_rate: number = 0;
   chartOptions: any;
   colorMap = new Map<string, string>();
   selectedRule: string | null = null;
@@ -17,7 +18,7 @@ export class RuleDonutComponent implements OnChanges {
   isSidebarOpen: boolean = false;
   sidebarData: any = null;
   isLoadingDetails: boolean = false;
-
+  constructor(private eventService: EventService) { }
   // Professional color palette
   private colorPalette = [
     '#667eea', '#764ba2', '#f093fb', '#f5576c',
@@ -139,8 +140,13 @@ export class RuleDonutComponent implements OnChanges {
     return mostActive.name;
   }
 
-  getSuccessRate(): string {
-    return '94.5';
+  getSuccessRate() {
+    // this.eventService.get_success_rate().subscribe((count: number) => {
+    //   const successRate = count;
+    //   // const totalCount = this.getTotalRules();
+    //   // const successRate = ((successCount / totalCount) * 100).toFixed(1);
+    //   return successRate;
+    // });
   }
 
   getLastUpdated(): string {
